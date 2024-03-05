@@ -1,13 +1,9 @@
 export const assets = {
 	models: [
 		{
-			name: 'level',
-			source: 'models/level.glb'
+			name: 'map',
+			source: 'models/map.glb'
 		},
-		{
-			name: 'soldier',
-			source: 'models/soldier.glb'
-		}
 	],
 	textures: [
 
