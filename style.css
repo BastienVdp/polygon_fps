@@ -1,0 +1,49 @@
+body {
+	font-family: sans-serif;
+	margin: 0;
+	overflow: hidden;
+}
+
+#experience {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+#blocker {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: block;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	z-index: 99;
+}
+
+#blocker__instructions {
+	color: #ffffff;
+	width: 100%;
+	height: 100%;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	text-align: center;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+#blocker.not-visible {
+	visibility: hidden;
+}
