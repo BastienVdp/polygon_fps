@@ -1,3 +1,5 @@
+import Stats from 'three/examples/jsm/libs/stats.module';
+
 import Blocker from "./Components/Blocker";
 
 /**
@@ -14,13 +16,24 @@ export default class UI
 
 	initialize()
 	{
-		console.log('UI class initialized!');
+		this.createStats();
 
 		this.createBlocker();
+	}
+
+	createStats()
+	{
+		this.stats = new Stats();
+		document.body.appendChild(this.stats.dom);
 	}
 
 	createBlocker()
 	{
 		this.blocker = new Blocker();
+	}
+
+	update()
+	{
+		this.stats.update();
 	}
 }

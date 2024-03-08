@@ -8,13 +8,44 @@
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <div id="blocker">
-      <div id="blocker__instructions">
-        <span style="font-size: 40px">Click to play</span>
-        <br />
-        (Z, Q, S, D = Move, SPACE = Jump)
+    <div id="ui">
+      <div id="blocker">
+        <div id="blocker__instructions">
+          <span style="font-size: 40px">Click to play</span>
+          <br />
+          (Z, Q, S, D = Move, SPACE = Jump)
+        </div>
+      </div>
+      <div class="player">
+        <div class="player__stuff">
+          <div class="player_weapons">
+            <div class="weapon__current">
+              <div class="weapon__bullet">
+                <div class="weapon__bullet__count">21</div>
+                <div class="weapon__bullet_max">120</div>
+              </div>
+              <div class="weapon">
+                Primary
+              </div>
+            </div>
+            <div class="weapon__next">next</div>
+          </div>
+          <div class="player__health">
+            <div class="player__health__icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="5.3335" width="5.33333" height="16" rx="1" fill="white"/>
+                <rect x="16" y="5.33331" width="5.33333" height="16" rx="1" transform="rotate(90 16 5.33331)" fill="white"/>
+              </svg>
+                
+                
+            </div>
+            <div class="player__health__bar">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+   
     <canvas id="game"></canvas>
     <script type="module" src="/main.js"></script>
   </body>

@@ -2,16 +2,21 @@ export const assets = {
 	models: [
 		{
 			name: 'map',
-			source: 'models/map.glb'
+			source: 'models/map_c.glb'
+		},
+		{
+			name: 'training',
+			source: 'models/training.glb'
 		},
 	],
 	textures: [
 
 	],
 	hdr: [
-		// {
-		// 	name: 'sky',
-		// 	source: 'textures/sky.hdr'
-		// }
+		{
+			name: 'sunset',
+			type: 'hdr',
+			source: 'sunset.hdr'
+		}
 	]
 };

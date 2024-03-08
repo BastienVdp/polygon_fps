@@ -1,4 +1,9 @@
 import UI from "@Game/UI/UI";
+import MiniMap from "@Game/Maps/MiniMap";
+
+import { MapsEnum } from "@Config/Enums/MapsEnum";
+import DesertMap from "@Game/Maps/DesertMap";
+import Player from "@Game/Gameplay/Player/Player";
 
 /**
  * Game class
@@ -14,10 +19,25 @@ export default class Game
 
 	initialize()
 	{
-		console.log('Game class initialized!');
+		this.desertMap = new DesertMap();
+		
+		this.player = new Player();
 
 		this.ui = new UI();
 	}
 
-	update() {}
+	createMap(map)
+	{
+		switch(map)
+		{
+			case MapsEnum.MINI:
+				return new MiniMap();
+		}
+	}
+
+	update() 
+	{
+		this.player.update();
+		this.ui.update();
+	}
 }

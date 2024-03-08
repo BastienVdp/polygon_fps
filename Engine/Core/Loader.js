@@ -134,6 +134,7 @@ export default class Loader
 	 */
 	onLoadSingle(resource, data)
 	{
+		console.log(resource);
 		this.loaded++;
 		LoadingEvent.detail.enum = LoadingEnum.SINGLE;
 		LoadingEvent.detail.progress = this.loaded / this.toLoad;

@@ -21,7 +21,7 @@ export default class Resources
 
 		EngineEventPipe.addEventListener(LoadingEvent.type, (e) => {
 			if(e.detail.enum === LoadingEnum.SINGLE) {
-				this.items[e.detail.resource.name] = e.detail.resource.data;
+				this.items[e.detail.resource.resource.name] = e.detail.resource.data;
 			}
 		});
 	}
@@ -35,4 +35,5 @@ export default class Resources
 	{
 		this.items[name] = data;
 	}
+
 }
