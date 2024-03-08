@@ -1,5 +1,5 @@
 import Engine from "@/Engine";
-import { EngineEventPipe, PointLockEvent } from "@Pipelines/EngineEventPipe";
+import { EngineEventPipe, PointLockEvent } from "@Pipes/EngineEventPipe";
 import { PointLockEventEnum } from "@Enums/EventsEnum";
 
 

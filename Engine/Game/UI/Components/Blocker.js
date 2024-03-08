@@ -2,7 +2,7 @@ import Component from "@Core/Component";
 import Engine from "@/Engine";
 
 import { PointLockEventEnum } from '@Enums/EventsEnum';
-import { PointLockEvent, EngineEventPipe } from '@Pipelines/EngineEventPipe';
+import { PointLockEvent, EngineEventPipe } from '@Pipes/EngineEventPipe';
 
 /**
  * Blocker class

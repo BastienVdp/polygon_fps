@@ -1,4 +1,4 @@
-import { EquirectangularReflectionMapping, LinearFilter } from 'three';
+import { EquirectangularReflectionMapping, LinearFilter, AmbientLight, DirectionalLight } from 'three';
 
 import Map from '@Core/Map';
 import Skybox from '@Game/Gameplay/Sky/Skybox';
@@ -15,6 +15,21 @@ export default class DesertMap extends Map
 	constructor()
 	{
 		super();
+
+		this.settings = {
+			collider: false,
+			directionalLight: {
+				intensity: 2.5,
+				color: 0xdab99a
+			},
+			ambiantLight: {
+				intensity: 0.5,
+				color: 0xffcfcf
+			}
+		};
+
+		this.folder = this.engine.debug.addFolder({ title: 'Desert Map', expanded: false });
+
 		this.initialize();
 	}
 
@@ -33,6 +48,7 @@ export default class DesertMap extends Map
 		this.setEnvironment();
 
 		this.setSky();
+		this.setDebug();
 	}
 
 	/**
@@ -45,6 +61,7 @@ export default class DesertMap extends Map
 		this.scene.traverse((child) => {
 			if(child.isMesh)
 			{
+				child.visible = !this.settings.collider;
 				child.material.envMap = this.environment;
 				child.material.needsUpdate = true;
 				child.material.metalness = 0.0;
@@ -71,7 +88,7 @@ export default class DesertMap extends Map
 	setCollider()
 	{
 		this.collider = this.scene.getObjectByName("collider");
-		this.collider.visible = false;
+		this.collider.visible = this.settings.collider;
 
 		this.engine.octree.fromGraphNode(this.collider);
 	}
@@ -86,13 +103,62 @@ export default class DesertMap extends Map
 		this.environment = this.engine.resources.get('sunset');
 		this.environment.mapping = EquirectangularReflectionMapping;
 		this.environment.magFilter = LinearFilter;
-
 		this.engine.scenes.level.environment = this.environment;
-		// const ambiantLight = new AmbientLight(0xffffff, 0.3);
-		// this.engine.scenes.level.add(ambiantLight);
+		this.engine.scenes.player.environment = this.environment;
+		
+		this.ambiantLight = new AmbientLight(this.settings.ambiantLight.color, this.settings.ambiantLight.intensity);
+		this.engine.scenes.level.add(this.ambiantLight);
 
-		// const directionalLight = new DirectionalLight(0xffffff, 2.5);
-		// directionalLight.position.set(0, 10, 10);
-		// this.engine.scenes.level.add(directionalLight);
+		this.directionalLight = new DirectionalLight(this.settings.directionalLight.color, this.settings.directionalLight.intensity);
+		this.directionalLight.position.set(0, 10, 10);
+		this.engine.scenes.level.add(this.directionalLight);
+	}
+
+	setDebug()
+	{
+		this.folder.addBinding(this.settings, 'collider').on('change', ({ value }) => {
+			this.collider.visible = value;
+			this.scene.traverse((child) => {
+				if(child.isMesh && child.name !== "collider")
+				{
+					child.visible = !value;
+				}
+			});
+		});
+
+		this.subfolder = this.engine.debug.addFolder({ title: 'Lights', expanded: false });
+
+		this.subfolder.addBinding(this.settings.directionalLight, 'intensity', {
+			label: 'Directional Intensity',
+			min: 0,
+			max: 5,
+			step: 0.1
+		}).on('change', ({ value }) => {
+			this.directionalLight.intensity = value;
+		});
+
+		this.subfolder.addBinding(this.settings.directionalLight, 'color', {
+			label: 'Directional Color',
+			view: 'color'
+		}).on('change', ({ value }) => {
+			this.directionalLight.color.set(value);
+		});
+
+		this.subfolder.addBinding(this.settings.ambiantLight, 'intensity', {
+			label: 'Ambiant Intensity',
+			min: 0,
+			max: 2,
+			step: 0.1
+		}).on('change', ({ value }) => {
+			this.ambiantLight.intensity = value;
+		});
+
+		this.subfolder.addBinding(this.settings.ambiantLight, 'color', {
+			label: 'Ambiant Color',
+			view: 'color'
+		}).on('change', ({ value }) => {
+			this.ambiantLight.color.set(value);
+		});
+
 	}
 }

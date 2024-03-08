@@ -1,4 +1,4 @@
-import { EngineEventPipe, ResizeEvent } from '@Pipelines/EngineEventPipe';
+import { EngineEventPipe, ResizeEvent } from '@Pipes/EngineEventPipe';
 
 /**
  * Sizes class

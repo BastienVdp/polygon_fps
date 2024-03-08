@@ -12,11 +12,11 @@
     "vite": "^5.1.4"
   },
   "dependencies": {
+    "playroomkit": "^0.0.61",
     "three": "^0.160.0",
     "three-stdlib": "^2.29.4",
-    "vite-plugin-glsl": "^1.2.1",
-    "vite-plugin-wasm": "^3.3.0",
     "tweakpane": "^4.0.3",
-    "playroomkit": "^0.0.61"
+    "vite-plugin-glsl": "^1.2.1",
+    "vite-plugin-wasm": "^3.3.0"
   }
 }

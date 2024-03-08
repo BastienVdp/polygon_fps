@@ -11,6 +11,10 @@ body {
 	font-style: normal;
 }
 
+.tp-dfwv {
+	z-index: 4;
+}
+
 #experience {
 	position: absolute;
 	top: 0;

@@ -47,6 +47,8 @@ export default class LocalPlayer
 		this.initializeFirstPersonView();
 		this.initializeFirstPersonCamera();
 		this.initializeFirstPersonControls();
+
+		this.registerEvents();
 	}
 
 	/**
@@ -98,6 +100,11 @@ export default class LocalPlayer
 		this.controls = new FirstPersonControls({ player: this.player });
 	}
 
+	registerEvents()
+	{
+		
+	}
+
 	/**
      * Update method
      * @method update
@@ -106,5 +113,7 @@ export default class LocalPlayer
 	update()
 	{
 		this.controls.update();
+
+		this.engine.resources.get('M416_AnimationMixer').update(this.engine.time.delta);
 	}	
 }

@@ -14,7 +14,8 @@ import {
 	EngineEventPipe, 
 	LoadingEvent, 
 	ResizeEvent 
-} from "@Pipelines/EngineEventPipe";
+} from "@Pipes/EngineEventPipe";
+import {Pane} from "tweakpane"
 
 /**
  * Engine class
@@ -33,7 +34,9 @@ export default class Engine
 		}
 		Engine.instance = this;
 
+		this.debug = new Pane({
 
+		});
 		this.octree = new Octree();
 
 		this.canvas = document.querySelector('#game');

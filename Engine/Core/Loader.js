@@ -5,7 +5,7 @@ import { CubeTextureLoader } from 'three/src/loaders/CubeTextureLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
 
-import { EngineEventPipe, LoadingEvent } from '@Pipelines/EngineEventPipe';
+import { EngineEventPipe, LoadingEvent } from '@Pipes/EngineEventPipe';
 import { LoadingEnum } from '@Config/Enums/LoadingEnum';
 
 /**
@@ -134,7 +134,6 @@ export default class Loader
 	 */
 	onLoadSingle(resource, data)
 	{
-		console.log(resource);
 		this.loaded++;
 		LoadingEvent.detail.enum = LoadingEnum.SINGLE;
 		LoadingEvent.detail.progress = this.loaded / this.toLoad;

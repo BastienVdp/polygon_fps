@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 import Engine from "@/Engine";
-import { UserInputEvent, UserInputEventPipe } from "@Pipelines/UserInputEventPipe";
+import { UserInputEvent, UserInputEventPipe } from "@Pipes/UserInputEventPipe";
 import { UserInputEventEnum } from "@Enums/EventsEnum";
 
 /**
