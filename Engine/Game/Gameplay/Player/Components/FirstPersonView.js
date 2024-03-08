@@ -72,7 +72,7 @@ export default class FirstPersonView
 					child.material.needsUpdate = true;
 				}
 			});
-
+			weapon_armature.visible = false;
 			arms.children.forEach(child => {
 				child.frustumCulled = false;
 				if(child.isMesh)
@@ -85,7 +85,6 @@ export default class FirstPersonView
 			});
 
 			weapon_armature.rotation.order = 'YXZ';
-			// weapon_armature.rotation.y = -Math.PI / 2;
 			weapon_armature.position.set(-.62, 0, .2);
 
 			this.scene.add(weapon_armature);
@@ -102,12 +101,9 @@ export default class FirstPersonView
 				animationsActions.set(animation.name, animationAction);
 			});
 
-			console.log(animationsActions.get(`${gun}_idle`));
 			animationsActions.get(`${gun}_idle`).play();
 			this.engine.resources.set(`${gun}_AnimationsActions`, animationsActions);
 			this.engine.resources.set(`${gun}_AnimationMixer`, animationMixer);
-		
-		
 		});
 
 	}

@@ -1,7 +1,7 @@
 import UI from "@Game/UI/UI";
 import MiniMap from "@Game/Maps/MiniMap";
 
-import { MapsEnum } from "@Config/Enums/MapsEnum";
+import { MapsEnum } from "@Config/Enums/GameEnum";
 import DesertMap from "@Game/Maps/DesertMap";
 import Player from "@Game/Gameplay/Player/Player";
 

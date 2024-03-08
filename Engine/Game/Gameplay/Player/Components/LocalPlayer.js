@@ -7,7 +7,12 @@ import FirstPersonControls from "./FirstPersonControls";
 import FirstPersonCamera from "./FirstPersonCamera";
 import FirstPersonView from "./FirstPersonView";
 import InputManager from "@Game/Managers/InputManager";
+import InventoryManager from "@Game/Managers/InventoryManager";
+import Glock from "@Game/Gameplay/Weapons/Glock";
 
+import { InventoryEnum } from "@Enums/InventoryEnum";
+
+// import { UserInputEventPipe, UserInputEvent } from "@Pipes/UserInputEventPipe";
 /**
  * LocalPlayer class
  * @class LocalPlayer
@@ -47,6 +52,8 @@ export default class LocalPlayer
 		this.initializeFirstPersonView();
 		this.initializeFirstPersonCamera();
 		this.initializeFirstPersonControls();
+
+		this.initializeWeapons();
 
 		this.registerEvents();
 	}
@@ -100,9 +107,26 @@ export default class LocalPlayer
 		this.controls = new FirstPersonControls({ player: this.player });
 	}
 
+	initializeWeapons()
+	{
+		this.inventoryManager = new InventoryManager();
+
+		this.glock = new Glock({ 
+			camera: this.camera, 
+			id: this.id 
+		});
+
+		this.inventoryManager.pickUp(this.glock);
+
+		this.inventoryManager.switchWeapon(InventoryEnum.SECONDARY);
+	}
+
 	registerEvents()
 	{
-		
+		// UserInputEventPipe.addEventListener(UserInputEvent.type, e => {
+        //    console.log(e.detail);
+		//    this.handleUserInput(e.detail.enum);
+        // });
 	}
 
 	/**
@@ -113,7 +137,7 @@ export default class LocalPlayer
 	update()
 	{
 		this.controls.update();
-
+		this.inventoryManager.update();
 		this.engine.resources.get('M416_AnimationMixer').update(this.engine.time.delta);
 	}	
 }

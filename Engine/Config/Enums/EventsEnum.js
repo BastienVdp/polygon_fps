@@ -28,3 +28,13 @@ export const UserInputEventEnum =
     MOVE_RIGHT_UP: "MOVE_RIGHT_UP",
     JUMP: "JUMP",
 };
+
+export const WeaponAnimationEventEnum =
+{
+    HOLD: "HOLD",
+    EQUIP: "EQUIP",
+    RELIEVE_EQUIP: "RELIEVE_EQUIP",
+    FIRE: "FIRE",
+    RELOAD: "RELOAD",
+    PICKUP: "PICKUP"
+};

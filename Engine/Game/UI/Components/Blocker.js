@@ -56,7 +56,6 @@ export default class Blocker extends Component
 
 	hide()
 	{
-		console.log('hide');
 		this.element.classList.add('not-visible');
 	}
 }

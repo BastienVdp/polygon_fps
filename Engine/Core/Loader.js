@@ -6,7 +6,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
 
 import { EngineEventPipe, LoadingEvent } from '@Pipes/EngineEventPipe';
-import { LoadingEnum } from '@Config/Enums/LoadingEnum';
+import { LoadingEnum } from '@Config/Enums/GameEnum';
 
 /**
  * Loader class

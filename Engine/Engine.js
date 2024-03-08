@@ -8,7 +8,7 @@ import Game from "@Core/Game";
 
 import Sizes from "@Utils/Sizes";
 import Time from "@Utils/Time";
-import { LoadingEnum } from "@Config/Enums/LoadingEnum";
+import { LoadingEnum } from "@Config/Enums/GameEnum";
 
 import { 
 	EngineEventPipe, 
@@ -118,7 +118,7 @@ export default class Engine
 	{
 		switch(e.detail.enum) {
 			case LoadingEnum.SINGLE:
-				console.log(e.detail.progress, 'progress');
+				console.log(e.detail.progress);
 				break;
 			case LoadingEnum.COMPLETE:
 				this.createGame();
@@ -134,7 +134,6 @@ export default class Engine
 	 */
 	onResize = (e) =>
 	{
-		console.log('resize', e.detail.width, e.detail.height);
 		Object.values(this.cameras).forEach(camera => {
 			camera.aspect = e.detail.width / e.detail.height;
 			camera.updateProjectionMatrix();
