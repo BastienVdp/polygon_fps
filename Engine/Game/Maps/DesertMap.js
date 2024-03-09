@@ -1,7 +1,7 @@
 import { EquirectangularReflectionMapping, LinearFilter, AmbientLight, DirectionalLight } from 'three';
 
 import Map from '@Core/Map';
-import Skybox from '@Game/Gameplay/Sky/Skybox';
+// import Skybox from '@Game/Gameplay/Sky/Skybox';
 
 /**
  * DesertMap class
@@ -47,7 +47,7 @@ export default class DesertMap extends Map
 		this.setCollider();
 		this.setEnvironment();
 
-		this.setSky();
+		// this.setSky();
 		this.setDebug();
 	}
 

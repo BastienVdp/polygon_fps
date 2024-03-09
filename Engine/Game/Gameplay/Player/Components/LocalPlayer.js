@@ -5,12 +5,12 @@ import Engine from "@/Engine";
 
 import FirstPersonControls from "./FirstPersonControls";
 import FirstPersonCamera from "./FirstPersonCamera";
-import FirstPersonView from "./FirstPersonView";
 import InputManager from "@Game/Managers/InputManager";
 import InventoryManager from "@Game/Managers/InventoryManager";
 import Glock from "@Game/Gameplay/Weapons/Glock";
 
 import { InventoryEnum } from "@Enums/InventoryEnum";
+import M416 from "@Game/Gameplay/Weapons/M416";
 
 // import { UserInputEventPipe, UserInputEvent } from "@Pipes/UserInputEventPipe";
 /**
@@ -49,7 +49,6 @@ export default class LocalPlayer
 	{
 		this.initializePlayer();
 		
-		this.initializeFirstPersonView();
 		this.initializeFirstPersonCamera();
 		this.initializeFirstPersonControls();
 
@@ -74,16 +73,6 @@ export default class LocalPlayer
             onFloor: false,
 			animation: "IDLE"
         };
-	}
-
-	/**
-	 * Initialize the first-person view
-	 * @method initializeFirstPersonView
-	 * @description Creates and initializes the first-person view for the local player.
-	 */
-	initializeFirstPersonView()
-	{
-		this.firstPersonView = new FirstPersonView();
 	}
 
 	/**
@@ -115,10 +104,15 @@ export default class LocalPlayer
 			camera: this.camera, 
 			id: this.id 
 		});
-
 		this.inventoryManager.pickUp(this.glock);
 
-		this.inventoryManager.switchWeapon(InventoryEnum.SECONDARY);
+		this.m416 = new M416({
+			camera: this.camera,
+			id: this.id
+		});
+		this.inventoryManager.pickUp(this.m416);
+
+		this.inventoryManager.switchWeapon(InventoryEnum.PRIMARY);
 	}
 
 	registerEvents()

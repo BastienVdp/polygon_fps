@@ -4,6 +4,8 @@ import MiniMap from "@Game/Maps/MiniMap";
 import { MapsEnum } from "@Config/Enums/GameEnum";
 import DesertMap from "@Game/Maps/DesertMap";
 import Player from "@Game/Gameplay/Player/Player";
+import FirstPersonLayer from "../Game/Layers/FirstPersonLayer";
+import SkyLayer from "../Game/Layers/SkyLayer";
 
 /**
  * Game class
@@ -17,24 +19,36 @@ export default class Game
 		this.initialize();
 	}
 
+	/**
+	 * Initialize the game
+	 * @method initialize
+	 * @description Initializes the game by setting up the layers, map, player, and UI.
+	 */
 	initialize()
 	{
-		this.desertMap = new DesertMap();
-		
-		this.player = new Player();
+		this.setLayers();
 
+		this.desertMap = new DesertMap();
+		this.player = new Player();
 		this.ui = new UI();
 	}
 
-	createMap(map)
+	/**
+	 * Set layers
+	 * @method setLayers
+	 * @description Sets the layers for the game.
+	 */
+	setLayers()
 	{
-		switch(map)
-		{
-			case MapsEnum.MINI:
-				return new MiniMap();
-		}
+		this.firstPersonLayer = new FirstPersonLayer();
+		this.skyLayer = new SkyLayer();
 	}
 
+	/**
+	 * Update the game
+	 * @method update
+	 * @description Updates the game by updating the player and UI.
+	 */
 	update() 
 	{
 		this.player.update();

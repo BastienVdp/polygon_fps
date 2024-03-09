@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import Experience from "@/Experience";
+import Engine from "@/Engine";
 import AutomaticWeapon from "./Components/AutomaticWeapon";
 
-import { bulletDeltaPositionArray2ScreenCoordArray, bulletPositionArray2ScreenCoordArray } from "@Utils/Weapon";
-import { WeaponEnum } from "@Enums/Weapon";
+import { bulletDeltaPositionArray2ScreenCoordArray, bulletPositionArray2ScreenCoordArray } from "@Utils/Weapons";
+import { WeaponEnum } from "@Enums/WeaponEnum";
 
 // AK47
 const ak47BulletPositionArray = [
@@ -15,17 +15,16 @@ const ak47BulletPositionArray = [
     110, 87, 160, 88, 237, 95, 346, 147, 381, 146
 ];
 
-// 
-const bulletPosition = bulletPositionArray2ScreenCoordArray(ak47BulletPositionArray, 30, 0.2, 0.15, 1.4); // 计算弹道图
-const bulletPositionDelta = bulletDeltaPositionArray2ScreenCoordArray(ak47BulletPositionArray, 30, 0.2, 0.15, 1); // 影响相机抖动
+const bulletPosition = bulletPositionArray2ScreenCoordArray(ak47BulletPositionArray, 30, 0.2, 0.15, 1.4);
+const bulletPositionDelta = bulletDeltaPositionArray2ScreenCoordArray(ak47BulletPositionArray, 30, 0.2, 0.15, 1);
 
-export default class AK extends AutomaticWeapon
+export default class M416 extends AutomaticWeapon
 {
 	constructor({ camera, id })
 	{
 		super(bulletPosition, bulletPositionDelta, camera, id);
 
-		this.experience = new Experience();
+		this.engine = new Engine();
 
 		this.chamberPosition = new THREE.Vector3(.8, 1, -3);
 
@@ -35,7 +34,7 @@ export default class AK extends AutomaticWeapon
 	initialize()
 	{
 		this.setClassification(WeaponEnum.RIFLE);
-		this.setName("AK");
+		this.setName("M416");
 		this.setMagazineSize(30);
 		this.setFireRate(100 / 600);
 		this.setRecoverTime(0.001);

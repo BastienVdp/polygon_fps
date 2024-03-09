@@ -31,6 +31,7 @@ export default class SemiAutomaticWeapon extends BaseWeapon
         
         this.animationManager = new AnimationManager({ weapon: this });
     }
+    
     fire() 
 	{
         if(!this.params.startRecover)

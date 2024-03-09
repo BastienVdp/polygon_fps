@@ -68,6 +68,11 @@ export default class Renderer
 		this.setDebug();
 	}
 
+	/**
+	 * Set the effect composer
+	 * @method setEffectComposer
+	 * @description Set the effect composer for the renderer by adding render, fxaa, and output passes.
+	 */
 	setEffectComposer()
 	{
 		const pixelRatio = this.renderer.getPixelRatio();
@@ -88,6 +93,11 @@ export default class Renderer
 		this.composer.addPass(fxaaPass);
 	}
 	
+	/**
+	 * Set the debug
+	 * @method setDebug
+	 * @description Set the debug for the renderer by adding exposure settings.
+	 */
 	setDebug()
 	{
 		this.folder.addBinding(this.settings, 'exposure', { 
@@ -99,6 +109,11 @@ export default class Renderer
 
 	}
 
+	/**
+	 * Resize the renderer
+	 * @method resize
+	 * @description Resize the renderer and the composer
+	 */
 	resize()
 	{
 		this.renderer.setSize(this.sizes.width, this.sizes.height);
@@ -106,9 +121,14 @@ export default class Renderer
 		this.composer.setSize(this.sizes.width, this.sizes.height);
 	}
 
+	/**
+	 * Update the renderer
+	 * @method update
+	 * @description Update the renderer
+	 */
 	update()
 	{
-		// this.composer.render();
+		this.composer.render();
 
 		this.renderer.render(this.engine.scenes.skybox, this.engine.cameras.playerCamera);
 		this.renderer.clearDepth();
@@ -117,8 +137,6 @@ export default class Renderer
 		this.renderer.clearDepth();
 
 		this.renderer.render(this.engine.scenes.player, this.engine.cameras.firstPersonCamera);
-		this.renderer.clearDepth();
-
-		
+		this.renderer.clearDepth();		
 	}
 }

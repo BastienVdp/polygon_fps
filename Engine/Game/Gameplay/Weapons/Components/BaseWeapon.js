@@ -3,16 +3,39 @@
 import * as THREE from "three";
 import Engine from "@/Engine";
 
-import { UserInputEventPipe, UserInputEvent } from "@Pipes/UserInputEventPipe";
-import { AnimationEventPipe, FirstPersonAnimationEvent } from "@Pipes/AnimationEventPipe";
-import { GameEventPipe, WeaponFireEvent } from "@Pipes/GameEventPipe";
-import { UserInputEventEnum, WeaponAnimationEventEnum } from "@Enums/EventsEnum";
+import WeaponSystem from "../WeaponSystem";
+
+import { 
+	UserInputEventPipe, 
+	UserInputEvent 
+} from "@Pipes/UserInputEventPipe";
+import { 
+	AnimationEventPipe, 
+	FirstPersonAnimationEvent 
+} from "@Pipes/AnimationEventPipe";
+import { 
+	GameEventPipe, 
+	WeaponFireEvent 
+} from "@Pipes/GameEventPipe";
+import { 
+	UserInputEventEnum, 
+	WeaponAnimationEventEnum 
+} from "@Enums/EventsEnum";
+
+import { guns } from "@Config/Guns";
 import { traverseGraph } from "@Utils/Three";
 
-// import BulletHole from "../../Sprites/Weapons/BulletHole";
-import WeaponSystem from "../WeaponSystem";
-import { guns } from "../../../../Config/Guns";
+const { 
+	REMOVE, 
+	IDLE, 
+	FIRE, 
+	RELOAD 
+} = WeaponAnimationEventEnum;
 
+const { 
+	BUTTON_RELOAD, 
+	BUTTON_TRIGGLE_DOWN 
+} = UserInputEventEnum;
 export default class BaseWeapon
 {
 	constructor(id)
@@ -22,7 +45,6 @@ export default class BaseWeapon
 
 		this.weaponSystem = new WeaponSystem();
 
-		this.containerId = id;
 		this.lastFireTime = 0;
 		this.bulletLeft = null;
 		this.bulletLeftMax = null;
@@ -41,9 +63,6 @@ export default class BaseWeapon
 	{
 		this.registerEventListeners();
 		this.initWeapons();
-
-		// this.smoke = new Smoke();
-		// this.hole = new BulletHole();
 	}
 
 	registerEventListeners()
@@ -55,10 +74,10 @@ export default class BaseWeapon
     {   
         if(!this.active) return;
 		switch (e.detail.enum) {
-			case UserInputEventEnum.BUTTON_RELOAD:
+			case BUTTON_RELOAD:
 				this.reloadWeapon();
 				break;
-			case UserInputEventEnum.BUTTON_TRIGGLE_DOWN:
+			case BUTTON_TRIGGLE_DOWN:
 				this.triggerWeapon();
 				break;
 		}
@@ -81,7 +100,8 @@ export default class BaseWeapon
 	reloadWeapon() 
 	{
         if (this.magazineSize <= this.bulletLeft) return;
-        this.setActive(false);
+		// TODO reload time duration animation
+		this.setActive(false);
 		this.dispatchAnimationWeapon(WeaponAnimationEventEnum.RELOAD);
     }
 

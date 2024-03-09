@@ -3,11 +3,11 @@ import Engine from "@/Engine";
 import { guns } from '@Config/Guns';
 
 /**
- * FirstPersonView class
- * @class FirstPersonView
+ * FirstPersonLayer class
+ * @class FirstPersonLayer
  * @description Represents the first-person view in the game environment.
  */
-export default class FirstPersonView
+export default class FirstPersonLayer
 {
 	/**
 	 * Constructor

@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import Experience from "@/Experience";
+import Engine from "@/Engine";
 import BaseWeapon from "./BaseWeapon";
 
-import { UserInputEventEnum, WeaponAnimationEventEnum } from "../../../Enums/Events";
+import { WeaponAnimationEventEnum } from "@Enums/EventsEnum";
 import WeaponSystem from "../WeaponSystem";
-import AnimationManager from "../../Manager/AnimationManager";
+import AnimationManager from "@Game/Managers/AnimationManager";
 
 export default class AutomaticWeapon extends BaseWeapon
 {
@@ -12,7 +12,7 @@ export default class AutomaticWeapon extends BaseWeapon
     {
         super(id);
 
-        this.experience = new Experience();
+        this.engine = new Engine();
 
         this.bulletPosition = bulletPosition;
         this.bulletPositionDelta = bulletPositionDelta;
@@ -119,7 +119,7 @@ export default class AutomaticWeapon extends BaseWeapon
             }
         }
         const triggleDown = this.weaponSystem.triggerDown;
-        let deltaRecoverScale = this.experience.time.delta / this.recoverTime; 
+        let deltaRecoverScale = this.engine.time.delta / this.recoverTime; 
         
         // Si la gachette n'est pas enfoncée ou qu'il n'y a plus de balles ou que l'arme n'est pas active
         if (!triggleDown || this.bulletLeft <= 0 || !this.active) {

@@ -64,6 +64,7 @@ export default class Loader
             }
 		});
 
+		// FBX
 		this.loaders.push({
 			type: ['fbx'],
 			action: (resource) =>
@@ -74,6 +75,7 @@ export default class Loader
             }
 		});
 		
+		// PNG, JPG, JPEG
 		this.loaders.push({
 			type: ['png', 'jpg', 'jpeg'],
 			action: (resource) => 
@@ -84,6 +86,7 @@ export default class Loader
 			}
 		})
 
+		// Cube textures
 		this.loaders.push({
 			type: ['cube'],
 			action: (resource) => 

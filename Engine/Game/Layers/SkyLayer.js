@@ -4,11 +4,11 @@ import { Sky } from 'three/examples/jsm/objects/Sky'
 import Engine from "@/Engine";
 
 /**
- * Skybox class
- * @class Skybox
- * @description Represents the skybox in the game environment.
+ * Skylayer class
+ * @class Skylayer 
+ * @description Represents the skylayer in the game environment.
  */
-export default class Skybox
+export default class SkyLayer
 {
 	constructor()
 	{
