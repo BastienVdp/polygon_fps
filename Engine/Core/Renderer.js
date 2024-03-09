@@ -21,11 +21,11 @@ export default class Renderer
 		this.sizes = this.engine.sizes;
 		this.canvas = this.engine.canvas;
 
-		if(this.debug) {
-			this.debugFolder = this.debug.addFolder('Renderer');
-			this.debugFolder.open();
-		}
+		this.settings = {
+			exposure: 0.87,
 
+		}
+		this.folder = this.debug.addFolder({ title: 'Renderer', expanded: false });
 		this.initiliaze();
 	}
 
@@ -58,10 +58,6 @@ export default class Renderer
 		this.renderer.autoClearDepht = false;
 		this.renderer.autoClearStencil = false;
 
-		if(this.debugFolder) {
-			this.debugFolder.add(this.renderer, 'toneMappingExposure', 0, 10, 0.001).name('Exposure');
-		}
-
 		this.target = new THREE.WebGLRenderTarget(this.sizes.width, this.sizes.height, {
 			format: THREE.RGBAFormat,
 			colorSpace: THREE.ACESFilmicToneMapping,
@@ -69,8 +65,14 @@ export default class Renderer
 		this.target.samples = 8;
 
 		this.setEffectComposer();
+		this.setDebug();
 	}
 
+	/**
+	 * Set the effect composer
+	 * @method setEffectComposer
+	 * @description Set the effect composer for the renderer by adding render, fxaa, and output passes.
+	 */
 	setEffectComposer()
 	{
 		const pixelRatio = this.renderer.getPixelRatio();
@@ -91,6 +93,27 @@ export default class Renderer
 		this.composer.addPass(fxaaPass);
 	}
 	
+	/**
+	 * Set the debug
+	 * @method setDebug
+	 * @description Set the debug for the renderer by adding exposure settings.
+	 */
+	setDebug()
+	{
+		this.folder.addBinding(this.settings, 'exposure', { 
+			label: 'Exposure', 
+			min: 0, 
+			max: 2, 
+			step: 0.001 
+		}).on('change', ({ value }) => this.renderer.toneMappingExposure = value);
+
+	}
+
+	/**
+	 * Resize the renderer
+	 * @method resize
+	 * @description Resize the renderer and the composer
+	 */
 	resize()
 	{
 		this.renderer.setSize(this.sizes.width, this.sizes.height);
@@ -98,23 +121,22 @@ export default class Renderer
 		this.composer.setSize(this.sizes.width, this.sizes.height);
 	}
 
+	/**
+	 * Update the renderer
+	 * @method update
+	 * @description Update the renderer
+	 */
 	update()
 	{
 		this.composer.render();
 
-		// this.renderer.render(this.engine.scenes.skybox, this.engine.cameras.playerCamera);
-		// this.renderer.clearDepth();
+		this.renderer.render(this.engine.scenes.skybox, this.engine.cameras.playerCamera);
+		this.renderer.clearDepth();
 
-		// this.renderer.render(this.engine.scenes.level, this.engine.cameras.playerCamera);
-		// this.renderer.clearDepth();
+		this.renderer.render(this.engine.scenes.level, this.engine.cameras.playerCamera);
+		this.renderer.clearDepth();
 
-		// this.renderer.render(this.engine.scenes.sprites, this.engine.cameras.playerCamera);
-		// this.renderer.clearDepth();
-
-		// this.renderer.render(this.engine.scenes.player, this.engine.cameras.firstPersonCamera);
-		// this.renderer.clearDepth();
-
-		// this.renderer.render(this.engine.scenes.ui, this.engine.cameras.UICamera);
-		// this.renderer.clearDepth();
+		this.renderer.render(this.engine.scenes.player, this.engine.cameras.firstPersonCamera);
+		this.renderer.clearDepth();		
 	}
 }

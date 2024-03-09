@@ -1,8 +1,8 @@
 import Loader from '@Core/Loader';
 
 import { assets } from '@/assets';
-import { EngineEventPipe, LoadingEvent } from '@Pipelines/EngineEventPipe';
-import { LoadingEnum } from '@Config/Enums/LoadingEnum';
+import { EngineEventPipe, LoadingEvent } from '@Pipes/EngineEventPipe';
+import { LoadingEnum } from '@Config/Enums/GameEnum';
 
 /**
  * Resources class

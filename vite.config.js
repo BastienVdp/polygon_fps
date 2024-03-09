@@ -16,7 +16,7 @@ export default defineConfig({
 			'@Core': '/Engine/Core',
 			'@Game': '/Engine/Game',
 			'@Network': '/Engine/Network',
-			'@Pipelines': '/Engine/Pipelines',
+			'@Pipes': '/Engine/Pipes',
 			'@UI': '/Engine/UI',
 			'@Utils': '/Engine/Utils'
 		}

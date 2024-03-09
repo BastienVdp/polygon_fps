@@ -5,8 +5,8 @@ import { CubeTextureLoader } from 'three/src/loaders/CubeTextureLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
 
-import { EngineEventPipe, LoadingEvent } from '@Pipelines/EngineEventPipe';
-import { LoadingEnum } from '@Config/Enums/LoadingEnum';
+import { EngineEventPipe, LoadingEvent } from '@Pipes/EngineEventPipe';
+import { LoadingEnum } from '@Config/Enums/GameEnum';
 
 /**
  * Loader class
@@ -64,6 +64,7 @@ export default class Loader
             }
 		});
 
+		// FBX
 		this.loaders.push({
 			type: ['fbx'],
 			action: (resource) =>
@@ -74,6 +75,7 @@ export default class Loader
             }
 		});
 		
+		// PNG, JPG, JPEG
 		this.loaders.push({
 			type: ['png', 'jpg', 'jpeg'],
 			action: (resource) => 
@@ -84,6 +86,7 @@ export default class Loader
 			}
 		})
 
+		// Cube textures
 		this.loaders.push({
 			type: ['cube'],
 			action: (resource) => 
@@ -134,7 +137,6 @@ export default class Loader
 	 */
 	onLoadSingle(resource, data)
 	{
-		console.log(resource);
 		this.loaded++;
 		LoadingEvent.detail.enum = LoadingEnum.SINGLE;
 		LoadingEvent.detail.progress = this.loaded / this.toLoad;
