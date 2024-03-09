@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import Engine from "@/Engine";
-import AutomaticWeapon from "./Components/AutomaticWeapon";
 
+import AutomaticWeapon from "./Components/AutomaticWeapon";
+import { M416Config } from "@Config/Guns";
 import { bulletDeltaPositionArray2ScreenCoordArray, bulletPositionArray2ScreenCoordArray } from "@Utils/Weapons";
 import { WeaponEnum } from "@Enums/WeaponEnum";
 
-// AK47
 const ak47BulletPositionArray = [
     222, 602, 230, 585, 222, 540, 228, 472, 231, 398,
     200, 320, 180, 255, 150, 208, 190, 173, 290, 183,
@@ -15,8 +15,8 @@ const ak47BulletPositionArray = [
     110, 87, 160, 88, 237, 95, 346, 147, 381, 146
 ];
 
-const bulletPosition = bulletPositionArray2ScreenCoordArray(ak47BulletPositionArray, 30, 0.2, 0.15, 1.4);
-const bulletPositionDelta = bulletDeltaPositionArray2ScreenCoordArray(ak47BulletPositionArray, 30, 0.2, 0.15, 1);
+const bulletPosition = bulletPositionArray2ScreenCoordArray(ak47BulletPositionArray, M416Config.bulletNumber, M416Config.rateX, M416Config.rateY, M416Config.recoilForce);
+const bulletPositionDelta = bulletDeltaPositionArray2ScreenCoordArray(ak47BulletPositionArray, M416Config.bulletNumber, M416Config.rateX, M416Config.rateY, M416Config.recoilForce);
 
 export default class M416 extends AutomaticWeapon
 {
