@@ -49,7 +49,7 @@ export default class WeaponSystem
     handleWeaponFiring = (e) => 
     {
         if (e.detail.weapon && e.detail.weapon.classification !== WeaponEnum.MELEE) {
-            LayerEventPipe.dispatchEvent(ShotOutWeaponFireEvent);
+            GameEventPipe.dispatchEvent(ShotOutWeaponFireEvent);
         }
 
         this.processRaycasting(e);
@@ -133,7 +133,7 @@ export default class WeaponSystem
 
         // Envoi de l'événement pour l'affichage de l'impact de la balle
         // console.log('dispatching bullet fallen point event');
-        LayerEventPipe.dispatchEvent(BulletImpactEvent);
+        GameEventPipe.dispatchEvent(BulletImpactEvent);
     };
 
 }

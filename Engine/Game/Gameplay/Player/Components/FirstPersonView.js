@@ -101,7 +101,6 @@ export default class FirstPersonView
 				animationsActions.set(animation.name, animationAction);
 			});
 
-			animationsActions.get(`${gun}_idle`).play();
 			this.engine.resources.set(`${gun}_AnimationsActions`, animationsActions);
 			this.engine.resources.set(`${gun}_AnimationMixer`, animationMixer);
 		});

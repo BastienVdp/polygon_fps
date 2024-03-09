@@ -31,10 +31,11 @@ export const UserInputEventEnum =
 
 export const WeaponAnimationEventEnum =
 {
-    HOLD: "HOLD",
-    EQUIP: "EQUIP",
-    RELIEVE_EQUIP: "RELIEVE_EQUIP",
+    DRAW: "DRAW",
+    REMOVE: "REMOVE",
+    ADS: "ADS",
+    ADS_FIRE: "ADS_FIRE",
     FIRE: "FIRE",
     RELOAD: "RELOAD",
-    PICKUP: "PICKUP"
+    IDLE: "IDLE",
 };

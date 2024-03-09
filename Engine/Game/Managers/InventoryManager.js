@@ -67,8 +67,9 @@ export default class InventoryManager
 
 	animateWeaponSwitch(currentInventory, targetInventory) 
 	{
-        this.dispatchWeaponEvent(WeaponAnimationEventEnum.RELIEVE_EQUIP, currentInventory);
-        this.dispatchWeaponEvent(WeaponAnimationEventEnum.EQUIP, targetInventory);
+        console.log('animateWeaponSwitch', currentInventory, targetInventory);
+        this.dispatchWeaponEvent(WeaponAnimationEventEnum.REMOVE, currentInventory);
+        this.dispatchWeaponEvent(WeaponAnimationEventEnum.DRAW, targetInventory);
     }
 
     dispatchWeaponEvent(animationType, inventorySlot) 

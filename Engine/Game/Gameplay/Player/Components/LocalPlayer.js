@@ -123,11 +123,8 @@ export default class LocalPlayer
 
 	registerEvents()
 	{
-		// UserInputEventPipe.addEventListener(UserInputEvent.type, e => {
-        //    console.log(e.detail);
-		//    this.handleUserInput(e.detail.enum);
-        // });
 	}
+
 
 	/**
      * Update method

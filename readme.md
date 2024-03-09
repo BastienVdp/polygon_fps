@@ -36,7 +36,7 @@ Make sure you have the following installed on your machine before getting starte
 Run the following command to start the development server and launch the game in your browser:
 
 ```bash
-npm start
+npm run dev
 ```
 ## Project Structure
 
