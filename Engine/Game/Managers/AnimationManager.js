@@ -89,7 +89,7 @@ export default class AnimationManager
                 this.setupOnceAnimation(animation);
                 break;
             case `${this.weapon.name}_jump`:
-                this.setupLoopOnceAnimation(animation, 0.6);
+                this.setupJumpOnceAnimation(animation);
                 break;
             case `${this.weapon.name}_reload`:
             case `${this.weapon.name}_ads_aim`:
@@ -107,14 +107,7 @@ export default class AnimationManager
                 this.setupLoopRepeatAnimation(animation, 0.8);
                 break;
         }
-
-        if (this.isWeaponM416() && name === "M416_jump") {
-            animation.timeScale = 0.4;
-        }
-
-        if (this.isWeaponM416() && name === "M416_draw") {
-            animation.timeScale = 0.5;
-        }
+       
     }
 
     /**
@@ -136,17 +129,6 @@ export default class AnimationManager
     getAnimationClipName(animation) 
     {
         return animation._clip.name;
-    }
-
-    /**
-     * isWeaponM416
-     * @method isWeaponM416
-     * @description Whether the weapon is an M416.
-     * @returns {Boolean} - Whether the weapon is an M416.
-     */
-    isWeaponM416() 
-    {
-        return this.weapon.name === "M416";
     }
 
     /**
@@ -177,6 +159,12 @@ export default class AnimationManager
     {
         animation.setLoop(THREE.LoopOnce);
         animation.clampWhenFinished = true;
+
+        if (this.isWeaponM416()) {
+            animation.timeScale = 0.5;
+        } else {
+            animation.timeScale = 1;
+        }
     }
 
     /**
@@ -190,6 +178,16 @@ export default class AnimationManager
     {
         animation.setLoop(THREE.LoopOnce);
         animation.timeScale = timeScale
+    }
+
+    setupJumpOnceAnimation(animation, timeScale = 1.2)
+    {
+        animation.setLoop(THREE.LoopOnce);
+        if (this.isWeaponM416()) {
+            animation.timeScale = 0.7;
+        } else {
+            animation.timeScale = timeScale;
+        }
     }
 
     /**

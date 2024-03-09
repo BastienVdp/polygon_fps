@@ -2,7 +2,6 @@ import Engine from "@/Engine";
 import { EngineEventPipe, PointLockEvent } from "@Pipes/EngineEventPipe";
 import { PointLockEventEnum } from "@Enums/EventsEnum";
 
-
 const mouseConfig = { 
     dpi: 1000,
     mouseSensitivity: 0.5

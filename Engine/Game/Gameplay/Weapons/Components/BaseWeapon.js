@@ -25,12 +25,7 @@ import {
 import { guns } from "@Config/Guns";
 import { traverseGraph } from "@Utils/Three";
 
-const { 
-	REMOVE, 
-	IDLE, 
-	FIRE, 
-	RELOAD 
-} = WeaponAnimationEventEnum;
+const { RELOAD } = WeaponAnimationEventEnum;
 
 const { 
 	BUTTON_RELOAD, 
@@ -102,7 +97,7 @@ export default class BaseWeapon
         if (this.magazineSize <= this.bulletLeft) return;
 		// TODO reload time duration animation
 		this.setActive(false);
-		this.dispatchAnimationWeapon(WeaponAnimationEventEnum.RELOAD);
+		this.dispatchAnimationWeapon(RELOAD);
     }
 
 	triggerWeapon() 
@@ -119,9 +114,6 @@ export default class BaseWeapon
 	update()
 	{
 		this.animationManager.update();
-		this.engine.resources.get(`${this.name}_AnimationMixer`).update(this.engine.time.delta);
-		// this.smoke.update();
-		// this.hole.update();
 	}
 
 
