@@ -1,6 +1,6 @@
 # Polygon FPS
 
-![alt text](https://ibb.co/XZ2mVH8)
+![alt text](https://i.ibb.co/Lzk4vK5/screen.png)
 
 ## Welcome
 
