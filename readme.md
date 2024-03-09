@@ -68,6 +68,6 @@ We look forward to seeing your contributions!
 If you encounter issues or have questions, feel free to open an [issue](https://github.com/BastienVdp/polygon_fps/issues).
 
 ## Credits
-    - **[ThreeJS Journey](https://threejs-journey.com/)**
-    - **[Lian1998](https://github.com/lian1998)**
-    - **[Just Create](https://www.cgtrader.com/3d-models/exterior/cityscape/low-poly-fps-map-vol2)**
+- **[ThreeJS Journey](https://threejs-journey.com/)**
+- **[Lian1998](https://github.com/lian1998)**
+- **[Just Create](https://www.cgtrader.com/3d-models/exterior/cityscape/low-poly-fps-map-vol2)**
