@@ -36,11 +36,11 @@ export default class M416 extends AutomaticWeapon
 		this.setClassification(WeaponEnum.RIFLE);
 		this.setName("M416");
 		this.setMagazineSize(30);
-		this.setFireRate(100 / 600);
-		this.setRecoverTime(0.001);
-		this.setReloadTime(0);
-		this.setRecoilControl(8);
-		this.setAccurateRange(50);
+		this.setFireRate(60 / 600); // Fire rate per second
+		this.setRecoverTime(0.368); // Time to recover from recoil
+		this.setReloadTime(3); // Time to reload in seconds
+		this.setRecoilControl(6); // Recoil control
+		this.setAccurateRange(120); // Accurate range in meters
 		this.setBulletLeft(this.magazineSize);
 
 		super.init();

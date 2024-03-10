@@ -13,16 +13,6 @@ export default class SemiAutomaticWeapon extends BaseWeapon
         this.engine = new Engine();
 
         this.camera = camera; 
-
-        this.params = {
-            startRecover: true,
-            startRecoverLine: 0,
-            cameraRotationBasicTotal: 0,
-            recoverCameraRotateTotalX: 0,
-            bPointRecoiledScreenCoord: new THREE.Vector2()
-        };
-
-
     }
  
     init()
@@ -34,10 +24,10 @@ export default class SemiAutomaticWeapon extends BaseWeapon
     
     fire() 
 	{
-        if(!this.params.startRecover)
+        if(!this.startRecover)
 		{
 			// On définit le point de départ de la récupération de l'arme
-			this.params.cameraRotationBasicTotal = this.params.recoverCameraRotateTotalX;
+			this.cameraRotationBasicTotal = this.recoverCameraRotateTotalX;
 		}
 
 		// Calcule du recul aléatoire sur l'axe X et Y en fonction du recul de l'arme
@@ -46,10 +36,10 @@ export default class SemiAutomaticWeapon extends BaseWeapon
 
 		// Calcule l'inclinaison de la caméra due au recul de l'arme
 		const deltaPitch = 0.05 * Math.PI * (1 / this.recoilControl);
-        this.camera.pitch += deltaPitch;
+        this.camera.rotation.x += deltaPitch;
 
 		// Enregistre le total de l'inclinaison pour la récupération
-        this.params.cameraRotationBasicTotal += deltaPitch; 
+        this.cameraRotationBasicTotal += deltaPitch; 
 
 		// Incrémente la ligne de récupération en fonction du taux de tir
 		this.recoverLine += this.fireRate;
@@ -57,14 +47,14 @@ export default class SemiAutomaticWeapon extends BaseWeapon
 
         const deltaRecoiledX = bpX * k;
         const deltaRecoiledY = bpY * k;
-        this.params.bPointRecoiledScreenCoord.set(deltaRecoiledX, deltaRecoiledY);
+        this.bPointRecoiledScreenCoord.set(deltaRecoiledX, deltaRecoiledY);
 
         // Dispatch fire event
         this.dispatchAnimationWeapon(WeaponAnimationEventEnum.FIRE);
         this.dispatchWeaponFireEvent();
 
         this.bulletLeft -= 1;
-        this.params.startRecover = true;
+        this.startRecover = true;
         // ADD UI
         // console.log(`${this.bulletLeft + '/' + this.magazineSize}`);
     }
@@ -73,12 +63,12 @@ export default class SemiAutomaticWeapon extends BaseWeapon
 	{
         if(this.recoverLine !== 0)
 		{
-			if(this.params.startRecover)
+			if(this.startRecover)
 			{
 				// Définit la rotation totale de la caméra pour la récupération à partir de la rotation de base.
-				this.params.recoverCameraRotateTotalX = this.params.cameraRotationBasicTotal;
+				this.recoverCameraRotateTotalX = this.cameraRotationBasicTotal;
 				// Enregistre la ligne de récupération actuelle comme référence de départ.
-				this.params.startRecoverLine = this.recoverLine;
+				this.startRecoverLine = this.recoverLine;
 			}
 
 			// Calcule le taux de récupération en fonction du temps de récupération et du temps écoulé.
@@ -86,33 +76,33 @@ export default class SemiAutomaticWeapon extends BaseWeapon
             const recoverLineBeforeMinus = this.recoverLine;
 
 			// Si la ligne de récupération est supérieure à la ligne de récupération de départ multipliée par le taux de récupération, la ligne de récupération est réduite.
-            if (this.recoverLine - (deltaRecoverScale * this.params.startRecoverLine) > 0) 
+            if (this.recoverLine - (deltaRecoverScale * this.startRecoverLine) > 0) 
 			{
-				this.recoverLine -= (deltaRecoverScale * this.params.startRecoverLine);
+				this.recoverLine -= (deltaRecoverScale * this.startRecoverLine);
 			} 
 			// Sinon, la ligne de récupération est réduite à zéro et la récupération est terminée.
 			else 
 			{ 
-                deltaRecoverScale = this.recoverLine / this.params.startRecoverLine;
+                deltaRecoverScale = this.recoverLine / this.startRecoverLine;
                 this.recoverLine = 0; 
-                this.params.cameraRotationBasicTotal = 0;
-                this.params.recoverCameraRotateTotalX = 0;
+                this.cameraRotationBasicTotal = 0;
+                this.recoverCameraRotateTotalX = 0;
             }
 
             const minusScale = recoverLineBeforeMinus - this.recoverLine;
 
-            const recoverLineScale = minusScale / this.params.startRecoverLine;
-            const deltaPitch = this.params.cameraRotationBasicTotal * recoverLineScale;
+            const recoverLineScale = minusScale / this.startRecoverLine;
+            const deltaPitch = this.cameraRotationBasicTotal * recoverLineScale;
             
-			this.camera.pitch -= deltaPitch;
+			this.camera.rotation.x -= deltaPitch;
 
-            this.params.deltaPitch = deltaPitch;
+            this.deltaPitch = deltaPitch;
             // console.log('recover', this.recoverLine);
             // this.dispatchWeaponRecoilEvent()
 
-            this.params.recoverCameraRotateTotalX -= deltaPitch;
+            this.recoverCameraRotateTotalX -= deltaPitch;
 
-            this.params.startRecover = false; 
+            this.startRecover = false; 
 		}
     }
 

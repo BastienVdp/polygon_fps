@@ -49,6 +49,15 @@ export default class BaseWeapon
 		this.id = THREE.MathUtils.generateUUID();
 
 		this.recoverLine = 0;
+		this.startRecover = true; 
+		this.startRecoverLine = 0; 
+		this.cameraRotateTotalX = 0; 
+		this.cameraRotateTotalY = 0;
+		this.cameraRotationBasicTotal = 0; 
+		this.recovercameraRotateTotalX = 0; 
+		this.recovercameraRotateTotalY = 0;
+		this.bPointRecoiledScreenCoord = new THREE.Vector2(); 
+
 	
 		this.guns = new Map();
 		this.animationsActions = new Map();
@@ -107,7 +116,7 @@ export default class BaseWeapon
         if (performance.now() - this.lastFireTime >= this.fireRate * 1000) {
             this.lastFireTime = performance.now();
             this.fire();
-			
+			console.log('fire');
         }
     }
 
@@ -129,7 +138,7 @@ export default class BaseWeapon
 
 	dispatchWeaponFireEvent() 
 	{
-		WeaponFireEvent.detail.params = this.params;
+		WeaponFireEvent.detail.params = { bPointRecoiledScreenCoord: this.bPointRecoiledScreenCoord};
         WeaponFireEvent.detail.weapon = this;
         GameEventPipe.dispatchEvent(WeaponFireEvent);
     }
@@ -144,6 +153,7 @@ export default class BaseWeapon
 
 	setActive(active)
 	{
+		console.log(this.name, active)
 		this.active = active;
 	}
 
