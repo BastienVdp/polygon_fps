@@ -82,7 +82,6 @@ export default class AnimationManager
     configureAnimation(name)
     {
         const animation = this.animations[name];
-
         switch (name) {
             case `${this.weapon.name}_draw`:
             case `${this.weapon.name}_remove`:
@@ -92,19 +91,26 @@ export default class AnimationManager
                 this.setupJumpOnceAnimation(animation);
                 break;
             case `${this.weapon.name}_reload`:
-            case `${this.weapon.name}_ads_aim`:
+                this.setupLoopOnceAnimation(animation, animation._clip.duration / (this.weapon.reloadTime * 2));
+                break;
             case `${this.weapon.name}_fire`:
+            case `${this.weapon.name}_ads_fire`:
                 this.setupLoopOnceAnimation(animation);
                 break;
             case `${this.weapon.name}_idle`:
                 this.setupLoopRepeatAnimation(animation, 0.8);
                 break;
-            case `${this.weapon.name}_ads_fire`:
             case `${this.weapon.name}_walk`:
                 this.setupLoopRepeatAnimation(animation);
                 break;
             case `${this.weapon.name}_run`:
                 this.setupLoopRepeatAnimation(animation, 0.8);
+                break;
+            case `${this.weapon.name}_ads_aim`:
+                this.setupOnceAnimation(animation);
+                break;
+            case `${this.weapon.name}_ads_fire`:
+                this.setupLoopRepeatAnimation(animation);
                 break;
         }
        
@@ -161,9 +167,9 @@ export default class AnimationManager
         animation.clampWhenFinished = true;
 
         if (this.isWeaponM416()) {
-            animation.timeScale = 0.5;
+            animation.timeScale = 0.8;
         } else {
-            animation.timeScale = 1;
+            animation.timeScale = 2.0;
         }
     }
 
@@ -219,7 +225,6 @@ export default class AnimationManager
             this.handleUserInputEvent(e.detail.enum);
         });
 
-        console.log(this.engine.resources);;
         this.engine.resources.get(`${this.weapon.name}_AnimationMixer`).addEventListener('finished', e => {
             if (e.type === 'finished') {
                 this.handleAnimationFinished(e);
@@ -253,6 +258,23 @@ export default class AnimationManager
             case UserInputEventEnum.JUMP:
                 this.handleJump();
                 break;
+            case UserInputEventEnum.BUTTON_ADS_DOWN:
+                this.handleADS(true);
+                break;
+            case UserInputEventEnum.BUTTON_ADS_UP:
+                this.handleADS(false);
+                break;
+        }
+    }
+
+    handleADS(isADS)
+    {
+        if(!this.states.reloading && this.weapon.active) {
+            this.stopAllAnimations();
+            this.states.ads = isADS;
+
+            // TODO transition idle to ads / ads to idle
+            this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, isADS);
         }
     }
 
@@ -268,12 +290,12 @@ export default class AnimationManager
         if (this.states.running !== isRunning) {
             this.states.running = isRunning;
 
-            if (!this.states.running) {
+            if (!this.states.running && !this.states.ads) {
                 this.playAnimation(IDLE);
             }
         }
         
-        this.playOrStopAnimation(`${this.weapon.name}_run`, this.states.running);
+        this.playOrStopAnimation(`${this.weapon.name}_run`, this.states.running && !this.states.ads);
     }
 
     /**
@@ -287,12 +309,12 @@ export default class AnimationManager
         if (this.states.walking !== isWalking) {
             this.states.walking = isWalking;
 
-            if (!this.states.walking) {
+            if (!this.states.walking && !this.states.ads) {
                 this.playAnimation(IDLE);
             }
         }
 
-        this.playOrStopAnimation(`${this.weapon.name}_walk`, this.states.walking && !this.states.reloading);
+        this.playOrStopAnimation(`${this.weapon.name}_walk`, this.states.walking && !this.states.reloading && !this.states.ads);
     }
 
     /**
@@ -305,7 +327,7 @@ export default class AnimationManager
         this.states.jumping = true;
         this.playOrStopAnimation(`${this.weapon.name}_walk`, false);
         this.playOrStopAnimation(`${this.weapon.name}_run`, false);
-        this.stopAndPlayAnimation(`${this.weapon.name}_jump`);
+        if(!this.states.ads) this.stopAndPlayAnimation(`${this.weapon.name}_jump`);
     }
 
     /**
@@ -335,9 +357,18 @@ export default class AnimationManager
             case this.getAnimationClipName(this.animations[`${this.weapon.name}_fire`]):
                 this.handleIdleAnimation();
                 break;
+            case this.getAnimationClipName(this.animations[`${this.weapon.name}_ads_fire`]):
+                this.handleAdsAnimation();
         }
     }
 
+    handleAdsAnimation()
+    {
+        this.stopAllAnimations();
+        this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, true);
+        // this.playOrStopAnimation(`${this.weapon.name}_ads_fire`, this.states.ads);
+    }
+    
     /**
      * handleReloadAnimationFinished
      * @method handleReloadAnimationFinished
@@ -365,18 +396,6 @@ export default class AnimationManager
     }
 
     /**
-     * handleRemoveAnimationFinished
-     * @method handleRemoveAnimationFinished
-     * @description Handles the remove animation finished event.
-     * @param {Event} e - The event.
-     */
-    handleRemoveAnimationFinished() 
-    {
-        this.weapon.setActive(false);
-        this.weapon.setVisible(false);
-    }
-
-    /**
      * playAnimation
      * @method playAnimation
      * @description Plays the animation based on the event.
@@ -387,7 +406,6 @@ export default class AnimationManager
         switch (event) {
             case REMOVE:
                 this.handleRemoveAnimation();
-                this.handleRemoveAnimationFinished();
                 break;
             case DRAW:
                 this.handleDrawAnimation();
@@ -411,9 +429,10 @@ export default class AnimationManager
      */
     handleRemoveAnimation() 
     {
-        this.weapon.setActive(false);
         this.stopAllAnimations();
         this.fadeOutAllAnimations(0.5);
+        this.weapon.setActive(false);
+        this.weapon.setVisible(false);
     }
 
     /**
@@ -424,8 +443,8 @@ export default class AnimationManager
     handleDrawAnimation() 
     {
         this.weapon.setVisible(true);
-        this.stopAndPlayAnimation(`${this.weapon.name}_draw`);
         this.weapon.setActive(false);
+        this.stopAndPlayAnimation(`${this.weapon.name}_draw`);
     }
 
     /**
@@ -448,7 +467,11 @@ export default class AnimationManager
     {
         // this.stopAndPlayAnimation(`${this.weapon.name}_idle`);
         this.fadeOutAllAnimations(0.5);
-        this.stopAndPlayAnimation(`${this.weapon.name}_fire`);
+        if(!this.states.ads) {
+            this.stopAndPlayAnimation(`${this.weapon.name}_fire`);
+        } else {
+            this.stopAndPlayAnimation(`${this.weapon.name}_ads_fire`);
+        }
     }
 
 
@@ -459,6 +482,8 @@ export default class AnimationManager
      */
     handleReloadAnimation() 
     {
+        this.stopAllAnimations();
+
         this.states.reloading = true;
         this.stopAndPlayAnimation(`${this.weapon.name}_reload`);
     }
@@ -514,6 +539,8 @@ export default class AnimationManager
         Object.values(this.animations).forEach(animation => {
             animation.reset().stop();
         });
+
+        Object.values(this.states).forEach(state => state = false);
     }
 
     /**

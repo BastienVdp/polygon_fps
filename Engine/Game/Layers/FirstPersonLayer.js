@@ -44,7 +44,8 @@ export default class FirstPersonLayer
 		this.camera.clearViewOffset();
 		this.camera.scale.z = 1.2;
 		this.camera.position.y = .2;
-		this.camera.position.x = -.6;
+		this.camera.position.x = 0;
+		this.camera.position.z = -.3;
         this.camera.rotation.y = Math.PI;
 	}
 
@@ -72,7 +73,9 @@ export default class FirstPersonLayer
 					child.material.needsUpdate = true;
 				}
 			});
+
 			weapon_armature.visible = false;
+
 			arms.children.forEach(child => {
 				child.frustumCulled = false;
 				if(child.isMesh)
@@ -85,8 +88,11 @@ export default class FirstPersonLayer
 			});
 
 			weapon_armature.rotation.order = 'YXZ';
-			weapon_armature.position.set(-.62, 0, .2);
-
+			if(weapon_armature.name === 'Glock_Armature') {
+				weapon_armature.position.set(0, -.02, 0);
+			} else if(weapon_armature.name === 'M416_Armature') {
+				weapon_armature.position.set(0, -.005, 0);
+			}
 			this.scene.add(weapon_armature);
 
 			this.engine.resources.set(`${gun}_Armature`, weapon_armature);

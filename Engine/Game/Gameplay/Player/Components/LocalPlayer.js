@@ -11,6 +11,7 @@ import Glock from "@Game/Gameplay/Weapons/Glock";
 
 import { InventoryEnum } from "@Enums/InventoryEnum";
 import M416 from "@Game/Gameplay/Weapons/M416";
+import AWP from "../../Weapons/AWP";
 
 // import { UserInputEventPipe, UserInputEvent } from "@Pipes/UserInputEventPipe";
 /**
@@ -101,17 +102,23 @@ export default class LocalPlayer
 		this.inventoryManager = new InventoryManager();
 
 		this.glock = new Glock({ 
-			camera: this.camera, 
+			camera: this.camera.camera, 
 			id: this.id 
 		});
 		this.inventoryManager.pickUp(this.glock);
 
 		this.m416 = new M416({
-			camera: this.camera,
+			camera: this.camera.camera,
 			id: this.id
 		});
 		this.inventoryManager.pickUp(this.m416);
 
+		this.awp = new AWP({
+			camera: this.camera.camera,
+			id: this.id
+		});
+		// this.inventoryManager.pickUp(this.awp);
+		
 		this.inventoryManager.switchWeapon(InventoryEnum.PRIMARY);
 	}
 

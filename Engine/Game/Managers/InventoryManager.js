@@ -10,7 +10,7 @@ import { InventoryEnum, mapIventorySlotByWeaponClassificationEnum } from "@Enums
 const {
     BUTTON_SWITCH_PRIMARY_WEAPON,
     BUTTON_SWITCH_SECONDARY_WEAPON,
-    BUTTON_SWITCH_MELEE_WEAPON,
+    BUTTON_SWITCH_SNIPER_WEAPON,
     BUTTON_SWITCH_LAST_WEAPON
 } = UserInputEventEnum;
 
@@ -71,12 +71,13 @@ export default class InventoryManager
             case BUTTON_SWITCH_SECONDARY_WEAPON:
                 this.switchWeapon(InventoryEnum.SECONDARY);
                 break;
-            case BUTTON_SWITCH_MELEE_WEAPON:
-                this.switchWeapon(InventoryEnum.MELEE);
+            case BUTTON_SWITCH_SNIPER_WEAPON:
+                this.switchWeapon(InventoryEnum.PRIMARY);
                 break;
             case BUTTON_SWITCH_LAST_WEAPON:
                 this.switchWeapon(this.lastWeapon);
                 break;
+
         }
 	}
 

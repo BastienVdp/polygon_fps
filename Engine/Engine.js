@@ -148,7 +148,7 @@ export default class Engine
 			this.time.update();
 		}
 		
-		if(this.game) {
+		if(this.game && this.pointLock.isLocked) {
 			this.game.update();
 		}
 

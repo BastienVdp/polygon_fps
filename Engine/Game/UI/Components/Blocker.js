@@ -15,9 +15,9 @@ export default class Blocker extends Component
 	constructor() 
 	{
 		super({
-			element: '#blocker',
+			element: '.blocker',
 			elements: {
-				'instructions': '#blocker__instructions',
+				'instructions': '.blocker__instructions',
 			}
 		});
 

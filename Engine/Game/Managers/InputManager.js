@@ -26,6 +26,13 @@ export default class InputManager
         document.addEventListener('keyup', e => this.handleKeyUp(e));
     }
 
+    handleContextMenu(e)
+    {
+        if (e.button === 2) {
+            this.dispatchEvent(UserInputEventEnum.BUTTON_ADS);
+
+        }
+    }
     /**
      * Handle mouse down event
      * @method handleMouseDown
@@ -36,6 +43,10 @@ export default class InputManager
     {
         if (e.button === 0) {
             this.dispatchEvent(UserInputEventEnum.BUTTON_TRIGGLE_DOWN);
+        }
+
+        if (e.button === 2) {
+            this.dispatchEvent(UserInputEventEnum.BUTTON_ADS_DOWN);
         }
     }
 
@@ -49,6 +60,9 @@ export default class InputManager
     {
         if (e.button === 0) {
             this.dispatchEvent(UserInputEventEnum.BUTTON_TRIGGLE_UP);
+        }
+        if (e.button === 2) {
+            this.dispatchEvent(UserInputEventEnum.BUTTON_ADS_UP);
         }
     }
 
@@ -69,9 +83,9 @@ export default class InputManager
             'KeyR': UserInputEventEnum.BUTTON_RELOAD,
             'Digit1': UserInputEventEnum.BUTTON_SWITCH_PRIMARY_WEAPON,
             'Digit2': UserInputEventEnum.BUTTON_SWITCH_SECONDARY_WEAPON,
-            'Digit3': UserInputEventEnum.BUTTON_SWITCH_MELEE_WEAPON,
+            'Digit3': UserInputEventEnum.BUTTON_SWITCH_SNIPER_WEAPON,
             'KeyQ': UserInputEventEnum.BUTTON_SWITCH_LAST_WEAPON,
-            'ShiftLeft': UserInputEventEnum.BUTTON_SHIFT_DOWN
+            'ShiftLeft': UserInputEventEnum.BUTTON_SHIFT_DOWN,
         };
 
         if (keyEventMapping[e.code]) {
@@ -92,13 +106,16 @@ export default class InputManager
             'KeyA': UserInputEventEnum.MOVE_LEFT_UP,
             'KeyS': UserInputEventEnum.MOVE_BACKWARD_UP,
             'KeyD': UserInputEventEnum.MOVE_RIGHT_UP,
-            'ShiftLeft': UserInputEventEnum.BUTTON_SHIFT_UP
+            'ShiftLeft': UserInputEventEnum.BUTTON_SHIFT_UP,
+            // right click
+            'ContextMenu': UserInputEventEnum.BUTTON_ADS
         };
 
         if (keyEventMapping[e.code]) {
             this.dispatchEvent(keyEventMapping[e.code]);
         }
     }
+
 
     /**
      * Dispatch user input event
