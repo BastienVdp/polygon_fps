@@ -137,6 +137,6 @@ export default class Renderer
 		this.renderer.clearDepth();
 
 		this.renderer.render(this.engine.scenes.player, this.engine.cameras.firstPersonCamera);
-		this.renderer.clearDepth();		
+		this.renderer.clearDepth();			
 	}
 }

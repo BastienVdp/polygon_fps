@@ -6,6 +6,7 @@ import { EngineEventPipe, PointLockEvent } from '@Pipes/EngineEventPipe';
 import { PointLockEventEnum } from '@Enums/EventsEnum';
 
 import Blocker from "./Components/Blocker";
+import HUD from './Components/HUD';
 
 /**
  * UI class
@@ -27,37 +28,10 @@ export default class UI
 	{
 		this.show();
 
-		this.element.addEventListener('click', () => {
-			if(!this.engine.pointLock.isLocked) this.engine.pointLock.lock();
-		});
-		
-		EngineEventPipe.addEventListener(PointLockEvent.type, (e) => this.handlePointerLockChange(e));
-
 		this.createStats();
 
 		this.createBlocker();
-	}
-
-	handlePointerLockChange(e)
-	{
-		switch (e.detail.enum) {
-			case PointLockEventEnum.LOCK: 
-				this.hide();
-				break;
-			case PointLockEventEnum.UNLOCK:
-				this.show();
-				break;
-		}
-	}
-
-	show()
-	{
-		this.element.classList.remove('not-visible');
-	}
-
-	hide()
-	{
-		this.element.classList.add('not-visible');
+		this.createHUD();
 	}
 
 	createStats()
@@ -69,6 +43,21 @@ export default class UI
 	createBlocker()
 	{
 		this.blocker = new Blocker();
+	}
+	
+	createHUD()
+	{
+		this.hud = new HUD();
+	}
+
+	show()
+	{
+		this.element.classList.remove('not-visible');
+	}
+
+	hide()
+	{
+		this.element.classList.add('not-visible');
 	}
 
 	update()

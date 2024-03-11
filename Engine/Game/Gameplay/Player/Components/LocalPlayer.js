@@ -106,20 +106,21 @@ export default class LocalPlayer
 			id: this.id 
 		});
 		this.inventoryManager.pickUp(this.glock);
-
+		this.inventoryManager.switchWeapon(InventoryEnum.SECONDARY);
+		
 		this.m416 = new M416({
 			camera: this.camera.camera,
 			id: this.id
 		});
 		this.inventoryManager.pickUp(this.m416);
 
-		this.awp = new AWP({
-			camera: this.camera.camera,
-			id: this.id
-		});
+		// this.awp = new AWP({
+		// 	camera: this.camera.camera,
+		// 	id: this.id
+		// });
 		// this.inventoryManager.pickUp(this.awp);
-		
 		this.inventoryManager.switchWeapon(InventoryEnum.PRIMARY);
+		
 	}
 
 	registerEvents()

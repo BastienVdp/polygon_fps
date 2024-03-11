@@ -42,7 +42,7 @@ export default class FirstPersonLayer
 	{
 		this.camera = this.engine.cameras.firstPersonCamera;
 		this.camera.clearViewOffset();
-		this.camera.scale.z = 1.2;
+		// this.camera.scale.z = 1.2;
 		this.camera.position.y = .2;
 		this.camera.position.x = 0;
 		this.camera.position.z = -.3;
@@ -110,6 +110,5 @@ export default class FirstPersonLayer
 			this.engine.resources.set(`${gun}_AnimationsActions`, animationsActions);
 			this.engine.resources.set(`${gun}_AnimationMixer`, animationMixer);
 		});
-
 	}
 }

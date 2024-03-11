@@ -18,6 +18,7 @@ export default class Glock extends SemiAutomaticWeapon
 		this.setClassification(WeaponEnum.PISTOL);
 		this.setName("Glock");
 		this.setMagazineSize(12);
+		this.setBulletLeftMax(48);
 		this.setFireRate(17 / 60);
 		this.setRecoverTime(0.34);
 		this.setReloadTime(1);

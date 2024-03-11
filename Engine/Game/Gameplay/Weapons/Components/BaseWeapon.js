@@ -1,5 +1,4 @@
 
-
 import * as THREE from "three";
 import Engine from "@/Engine";
 
@@ -22,15 +21,23 @@ import {
 	WeaponAnimationEventEnum 
 } from "@Enums/EventsEnum";
 
+import { WeaponEnum } from "@Enums/WeaponEnum";
+
 import { guns } from "@Config/Guns";
 import { traverseGraph } from "@Utils/Three";
+import { SniperWeanponAimEvent } from "../../../../Pipes/GameEventPipe";
 
 const { RELOAD } = WeaponAnimationEventEnum;
 
 const { 
 	BUTTON_RELOAD, 
-	BUTTON_TRIGGLE_DOWN 
+	BUTTON_TRIGGLE_DOWN,
+	BUTTON_ADS_DOWN,
+	BUTTON_ADS_UP
 } = UserInputEventEnum;
+
+import vertexShader from "@Assets/shaders/scope/vertex.glsl";
+import fragmentShader from "@Assets/shaders/scope/fragment.glsl";
 export default class BaseWeapon
 {
 	constructor(id)
@@ -67,6 +74,28 @@ export default class BaseWeapon
 	{
 		this.registerEventListeners();
 		this.initWeapons();
+
+		if(this.classification === WeaponEnum.SNIPER) {
+			this.initSniperScope();
+		}
+	}
+
+	initSniperScope()
+	{
+		this.scope = new THREE.Mesh(
+			new THREE.PlaneGeometry(1, 1),
+			new THREE.ShaderMaterial({
+				transparent: true,
+				side: THREE.DoubleSide,
+				vertexShader: vertexShader,
+				fragmentShader: fragmentShader,
+			})
+		);
+		this.scope.position.z = -0.2;
+		// this.scope.rotation.y = Math.PI;
+		this.scope.position.y = 0.2;
+		this.scope.visible = false;
+		this.engine.scenes.player.add(this.scope);
 	}
 
 	registerEventListeners()
@@ -84,8 +113,25 @@ export default class BaseWeapon
 			case BUTTON_TRIGGLE_DOWN:
 				this.triggerWeapon();
 				break;
+			case BUTTON_ADS_DOWN: 
+				this.handleADS(true);
+				break;
+			case BUTTON_ADS_UP: 
+				this.handleADS(false);
+				break;
 		}
     }
+
+	handleADS(isADS)
+	{
+		if(this.classification === WeaponEnum.SNIPER) {
+			this.scope.visible = isADS;
+			// SniperWeanponAimEvent.detail.aim = true;
+			// GameEventPipe.dispatchEvent(SniperWeanponAimEvent);
+			// // TODO : Add ADS Scope 
+		}
+	}
+
 
 	initWeapons()
 	{	
@@ -103,10 +149,17 @@ export default class BaseWeapon
 
 	reloadWeapon() 
 	{
-        if (this.magazineSize <= this.bulletLeft) return;
-		// TODO reload time duration animation
+		// Si le chargeur est plein ou qu'il n'y a plus de balles, on ne recharge pas
+		if(this.bulletLeft === this.magazineSize || (this.bulletLeftMax) <= 0) return;
 		this.setActive(false);
-		this.dispatchAnimationWeapon(RELOAD);
+		if(this.bulletLeftMax >= this.magazineSize) {
+			this.dispatchAnimationWeapon(RELOAD);
+
+		} else {
+			this.setBulletLeftMax(0);
+		}
+		this.setBulletLeftMax(this.bulletLeftMax - (this.magazineSize - this.bulletLeft));
+
     }
 
 	triggerWeapon() 
@@ -116,7 +169,6 @@ export default class BaseWeapon
         if (performance.now() - this.lastFireTime >= this.fireRate * 1000) {
             this.lastFireTime = performance.now();
             this.fire();
-			console.log('fire');
         }
     }
 
@@ -138,7 +190,7 @@ export default class BaseWeapon
 
 	dispatchWeaponFireEvent() 
 	{
-		WeaponFireEvent.detail.params = { bPointRecoiledScreenCoord: this.bPointRecoiledScreenCoord};
+		WeaponFireEvent.detail.params = { bPointRecoiledScreenCoord: this.bPointRecoiledScreenCoord, bulletCount: this.bulletLeft };
         WeaponFireEvent.detail.weapon = this;
         GameEventPipe.dispatchEvent(WeaponFireEvent);
     }
@@ -153,7 +205,6 @@ export default class BaseWeapon
 
 	setActive(active)
 	{
-		console.log(this.name, active)
 		this.active = active;
 	}
 

@@ -80,6 +80,7 @@ export default class Engine
 			level: new Scene(),
 			player: new Scene(),
 			skybox: new Scene(),
+			scope: new Scene(),
 		};
 
 	}
@@ -87,8 +88,9 @@ export default class Engine
 	createCameras()
 	{
 		this.cameras = {
+			uiCamera: new PerspectiveCamera(75, this.sizes.width / this.sizes.height, 0.1, 1000),
 			playerCamera: new PerspectiveCamera(75, this.sizes.width / this.sizes.height, 0.1, 1000),
-			firstPersonCamera: new PerspectiveCamera(50, this.sizes.width / this.sizes.height, 0.01, 100),
+			firstPersonCamera: new PerspectiveCamera(50, this.sizes.width / this.sizes.height, 0.0001, 1000),
 		};
 	}
 

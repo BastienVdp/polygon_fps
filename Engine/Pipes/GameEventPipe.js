@@ -34,4 +34,10 @@ export const BulletImpactEvent = new CustomEvent('bullet impact', {
     }
 });
 
-export const ShotOutWeaponFireEvent = new CustomEvent('shoutoutweapon fired', {})
+export const ShotOutWeaponFireEvent = new CustomEvent('shoutoutweapon fired', {});
+
+export const SniperWeanponAimEvent = new CustomEvent('sniper weapon aimed', {
+    detail: {
+        aim: undefined,
+    }
+});

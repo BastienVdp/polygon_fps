@@ -40,8 +40,8 @@ export default class InventoryManager
      */
 	initialize()
 	{
-		this.weapons.set(InventoryEnum.HANDS, null);
-        this.switchWeapon(InventoryEnum.HANDS);
+		// this.weapons.set(InventoryEnum.HANDS, null);
+        this.switchWeapon(InventoryEnum.SECONDARY);
 
 		this.registerEventListeners();
 	}
@@ -93,6 +93,7 @@ export default class InventoryManager
 
         this.animateWeaponSwitch(this.currentWeapon, targetInventory);
         
+        WeaponEquipEvent.detail.enum = WeaponAnimationEventEnum.DRAW;
         WeaponEquipEvent.detail.weapon = this.weapons.get(targetInventory);
         GameEventPipe.dispatchEvent(WeaponEquipEvent);
         
@@ -109,7 +110,6 @@ export default class InventoryManager
      */
 	animateWeaponSwitch(currentInventory, targetInventory) 
 	{
-        console.log('animateWeaponSwitch', currentInventory, targetInventory);
         this.dispatchWeaponEvent(WeaponAnimationEventEnum.REMOVE, currentInventory);
         this.dispatchWeaponEvent(WeaponAnimationEventEnum.DRAW, targetInventory);
     }

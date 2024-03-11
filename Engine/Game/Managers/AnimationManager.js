@@ -21,6 +21,7 @@ const {
     RELOAD
 } = WeaponAnimationEventEnum;
 
+import { WeaponEnum } from '@Enums/WeaponEnum';
 /**
  * AnimationManager class
  * @class AnimationManager
@@ -274,8 +275,17 @@ export default class AnimationManager
             this.states.ads = isADS;
 
             // TODO transition idle to ads / ads to idle
-            this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, isADS);
+            if(this.isSniper()) {
+                this.weapon.setVisible(!isADS);
+            } 
+                this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, isADS);
+            
         }
+    }
+
+    isSniper()
+    {
+        return this.weapon.classification === WeaponEnum.SNIPER;
     }
 
     /**
@@ -348,9 +358,9 @@ export default class AnimationManager
             case this.getAnimationClipName(this.animations[`${this.weapon.name}_draw`]):
                 this.handleDrawAnimationFinished();
                 break;
-            case this.getAnimationClipName(this.animations[`${this.weapon.name}_remove`]):
-                this.handleRemoveAnimationFinished();
-                break;
+            // case this.getAnimationClipName(this.animations[`${this.weapon.name}_remove`]):
+            //     this.handleRemoveAnimationFinished();
+            //     break;
             case this.getAnimationClipName(this.animations[`${this.weapon.name}_jump`]):
                 this.handleJumpAnimationFinished();
                 break;
