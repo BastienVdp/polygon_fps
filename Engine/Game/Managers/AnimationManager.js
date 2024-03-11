@@ -270,16 +270,28 @@ export default class AnimationManager
 
     handleADS(isADS)
     {
-        if(!this.states.reloading && this.weapon.active) {
-            this.stopAllAnimations();
+        if (!this.states.reloading && this.weapon.active) {
+            if(!this.isSniper()) this.stopAllAnimations();
             this.states.ads = isADS;
-
-            // TODO transition idle to ads / ads to idle
-            if(this.isSniper()) {
-                this.weapon.setVisible(!isADS);
-            } 
-                this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, isADS);
-            
+    
+            // Vérifier si c'est un sniper
+            if (this.isSniper()) {
+                if (isADS) {
+                    // Si c'est un sniper et qu'il vise
+                    this.weapon.setVisible(false);
+                    this.weapon.scope.visible = true;
+                } else {
+                    this.weapon.setVisible(true);
+                    this.weapon.scope.visible = false;
+                }
+            } else {
+                // Si ce n'est pas un sniper, on gère l'animation ADS normalement
+                if(!isADS) {
+                    this.playOrStopAnimation(`${this.weapon.name}_idle`, true);
+                } else {
+                    this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, isADS);
+                }
+            }
         }
     }
 
@@ -296,16 +308,12 @@ export default class AnimationManager
      */
     handleRunning(isRunning) 
     {
-        if(!this.states.walking && isRunning) return;
-        if (this.states.running !== isRunning) {
-            this.states.running = isRunning;
+        this.states.running = isRunning;
 
-            if (!this.states.running && !this.states.ads) {
-                this.playAnimation(IDLE);
-            }
+        if (!this.states.running && !this.states.ads) {
+            this.playAnimation(IDLE);
         }
-        
-        this.playOrStopAnimation(`${this.weapon.name}_run`, this.states.running && !this.states.ads);
+        if(this.states.walking) this.playOrStopAnimation(`${this.weapon.name}_run`, this.states.running);
     }
 
     /**
@@ -324,7 +332,15 @@ export default class AnimationManager
             }
         }
 
-        this.playOrStopAnimation(`${this.weapon.name}_walk`, this.states.walking && !this.states.reloading && !this.states.ads);
+        this.playOrStopAnimation(`${this.weapon.name}_walk`, this.states.walking && !this.states.running && !this.states.reloading && !this.states.ads);
+        
+        if(this.states.running) {
+            this.playOrStopAnimation(`${this.weapon.name}_run`, this.states.running);
+        }
+
+        if(!this.states.walking) {
+            this.playOrStopAnimation(`${this.weapon.name}_run`, false);
+        }
     }
 
     /**
@@ -365,6 +381,7 @@ export default class AnimationManager
                 this.handleJumpAnimationFinished();
                 break;
             case this.getAnimationClipName(this.animations[`${this.weapon.name}_fire`]):
+                console.log('fire finished go to idle');
                 this.handleIdleAnimation();
                 break;
             case this.getAnimationClipName(this.animations[`${this.weapon.name}_ads_fire`]):
@@ -464,6 +481,7 @@ export default class AnimationManager
      */
     handleIdleAnimation() 
     {
+        this.states.firing = false;
         this.stopAndPlayAnimation(`${this.weapon.name}_idle`);
     }
 
@@ -477,8 +495,13 @@ export default class AnimationManager
     {
         // this.stopAndPlayAnimation(`${this.weapon.name}_idle`);
         this.fadeOutAllAnimations(0.5);
-        if(!this.states.ads) {
+        this.states.firing = true;
+        if(this.isSniper() || !this.states.ads) {
             this.stopAndPlayAnimation(`${this.weapon.name}_fire`);
+            if(this.isSniper()) {
+                this.weapon.setVisible(true);
+                this.weapon.scope.visible = false;
+            }
         } else {
             this.stopAndPlayAnimation(`${this.weapon.name}_ads_fire`);
         }
@@ -496,6 +519,7 @@ export default class AnimationManager
 
         this.states.reloading = true;
         this.stopAndPlayAnimation(`${this.weapon.name}_reload`);
+        console.log(`${this.weapon.name}_reload`)
     }
 
 
@@ -553,6 +577,11 @@ export default class AnimationManager
         Object.values(this.states).forEach(state => state = false);
     }
 
+
+    getAnimationAction(name)
+    {
+        return this.animations[this.getAnimationClipName(name)];
+    }
     /**
      * update
      * @method update

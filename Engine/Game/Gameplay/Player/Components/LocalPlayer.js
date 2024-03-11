@@ -114,10 +114,10 @@ export default class LocalPlayer
 		});
 		this.inventoryManager.pickUp(this.m416);
 
-		// this.awp = new AWP({
-		// 	camera: this.camera.camera,
-		// 	id: this.id
-		// });
+		this.awp = new AWP({
+			camera: this.camera.camera,
+			id: this.id
+		});
 		// this.inventoryManager.pickUp(this.awp);
 		this.inventoryManager.switchWeapon(InventoryEnum.PRIMARY);
 		

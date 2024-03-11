@@ -113,24 +113,8 @@ export default class BaseWeapon
 			case BUTTON_TRIGGLE_DOWN:
 				this.triggerWeapon();
 				break;
-			case BUTTON_ADS_DOWN: 
-				this.handleADS(true);
-				break;
-			case BUTTON_ADS_UP: 
-				this.handleADS(false);
-				break;
 		}
     }
-
-	handleADS(isADS)
-	{
-		if(this.classification === WeaponEnum.SNIPER) {
-			this.scope.visible = isADS;
-			// SniperWeanponAimEvent.detail.aim = true;
-			// GameEventPipe.dispatchEvent(SniperWeanponAimEvent);
-			// // TODO : Add ADS Scope 
-		}
-	}
 
 
 	initWeapons()
@@ -149,6 +133,7 @@ export default class BaseWeapon
 
 	reloadWeapon() 
 	{
+		console.log('reloadWeapon');
 		// Si le chargeur est plein ou qu'il n'y a plus de balles, on ne recharge pas
 		if(this.bulletLeft === this.magazineSize || (this.bulletLeftMax) <= 0) return;
 		this.setActive(false);
