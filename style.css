@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap');
 
+* {
+	box-sizing: border-box;
+}
 body {
 	font-family: sans-serif;
 	margin: 0;
@@ -15,7 +18,7 @@ body {
 	z-index: 4;
 }
 
-#experience {
+#game {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -23,7 +26,7 @@ body {
 	bottom: 0;
 }
 
-#blocker {
+.blocker {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -40,7 +43,7 @@ body {
 	z-index: 2;
 }
 
-#blocker__instructions {
+.blocker__instructions {
 	color: #ffffff;
 	width: 100%;
 	height: 100%;
@@ -55,7 +58,59 @@ body {
 	cursor: pointer;
 }
 
-#blocker.not-visible {
+.lobby {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 3;
+	color: #ffffff;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	padding: 60px 0;
+	text-shadow: 3px 3px 0px #000000;
+}
+
+.lobby h1 {
+	font-size: 68px;
+	line-height: 1;
+}
+
+.lobby__actions {
+	width: 240px;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+.lobby button {
+	padding: 16px 24px;
+	font-size: 24px;
+	background-color: rgba(0, 0, 0, 0.2);
+	border: 1px solid rgba(174, 174, 174, 0.4);
+	cursor: pointer;
+	font-family: 'Teko', sans-serif;
+	color: white;
+}
+
+.lobby input[type="text"] {
+	padding: 16px 24px;
+	font-size: 24px;
+	background-color: rgba(0, 0, 0, 0.2);
+	border: 1px solid rgba(174, 174, 174, 0.4);
+	cursor: pointer;
+	font-family: 'Teko', sans-serif;
+	color: white;
+	border: none;
+	outline: none;
+}
+.lobby input[type="text"]::placeholder {
+	color: white;
+}
+.not-visible {
 	visibility: hidden;
 }
 
@@ -84,6 +139,7 @@ body {
 	gap: 28px;
 	padding: 16px 24px;
 	border-bottom: 2px solid white;
+	width: 168px;
 }
 
 .weapon__current .weapon__bullet {
@@ -96,21 +152,24 @@ body {
 	font-size: 26px;
 	line-height: 1;
 }
-.weapon__bullet_max::before {
+.weapon__bullet__max::before {
 	content: "/";
 	font-size: 26px;
 }
-.weapon__bullet_max {
+.weapon__bullet__max {
 	font-size: 26px;
 	line-height: 1;
 }
 
 .weapon {
+	width: 90px;
 	font-size: 32px;
 	text-transform: uppercase;
+	text-align: center;
 }
 
 .weapon__next {
+	width: 80px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -156,4 +215,185 @@ body {
 	height: 14px;
 	width: 80%;
 	background-color: #ffffff;
+}
+
+.menu-in-game {
+	/* visibility: hidden; */
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 3;
+	background-color: rgba(0, 0, 0, .95);
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	color: #ffffff;
+}
+
+.menu-in-game__nav {
+	flex-shrink: 0;
+	width: 100%;
+	padding: 24px 0;
+	background-color: rgba(0, 0, 0, .1);
+}
+
+.menu-in-game__nav ul {
+	display: flex;
+	gap: 36px;
+	justify-content: center;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.menu-in-game__nav ul li {
+	font-size: 24px;
+	cursor: pointer;
+}
+.menu-in-game__nav__item.active {
+	text-decoration: underline;
+}
+.menu-in-game__content {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.menu-in-game__content__item {
+	display: none;
+	width: 100%;
+	height: 100%;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.menu-in-game__content__item.active {
+	display: flex;
+}
+
+.menu-in-game__content__item__content {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+}
+
+.menu-in-game__content__item p {
+	text-align: center;
+}
+
+.menu-in-game__content__item__title {
+	font-size: 68px;
+	line-height: 1;
+}
+
+.menu-in-game__content .weapons__list {
+	display: flex;
+	justify-content: center;
+	gap: 16px;
+	margin-top: 24px;
+}
+
+.menu-in-game__content .weapons__list .weapons__list__item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(174, 174, 174, 0.1);
+	border: 1px solid rgba(174, 174, 174, 0.2);
+	width: 124px;
+	height: 96px;
+	font-size: 26px;
+}
+.menu-in-game__content .weapons__list .weapons__list__item.disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.menu-in-game__content .settings {
+	width: 50%;
+	height: 600px;
+	overflow-y: auto;
+	background-color: rgba(174, 174, 174, 0.1);
+	border: 1px solid rgba(174, 174, 174, 0.2);
+
+}
+
+.menu-in-game__content .settings::-webkit-scrollbar {
+	width: 10px;
+}
+  
+  /* Track */
+.menu-in-game__content .settings::-webkit-scrollbar-track {
+	background: transparent;
+}
+  
+  /* Handle */
+.menu-in-game__content .settings::-webkit-scrollbar-thumb {
+	background: rgba(174, 174, 174, 0.2);
+}
+  
+  /* Handle on hover */
+.menu-in-game__content .settings::-webkit-scrollbar-thumb:hover {
+	background: rgba(174, 174, 174, 0.1);
+}
+
+.settings .settings__row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px 28px;
+	border-top: 1px solid rgba(174, 174, 174, 0.2);
+}
+.settings .settings__row:last-of-type {
+}
+
+.settings__title {
+	padding: 18px;
+	border-top: 1px solid rgba(174, 174, 174, 0.2); 
+	border-right: 1px solid rgba(174, 174, 174, 0.2);
+	background-color: rgba(0, 0, 0, .5);
+	text-transform: uppercase;
+	font-size: 22px;
+	line-height: 1;
+}
+.settings .settings__row__label {
+	font-size: 18px;
+	line-height: 1;
+	font-weight: 300;
+}
+.settings .settings__row__value {
+	width: min-content;
+	background-color: rgba(174, 174, 174, 0.1);
+	border-radius: 6px;
+}
+
+.settings .settings__row__value input[type="text"] {
+	width: 40px;
+	padding: 8px 12px;
+	text-align: center;
+	background-color: transparent;
+	border: none;
+	color: white;
+	font-family: "Teko", sans-serif;
+	font-optical-sizing: auto;
+	font-size: 16px;
+}
+
+button.save {
+	margin-top: 24px;
+	padding: 16px 24px;
+	font-size: 24px;
+	background-color: rgba(0, 0, 0, 0.2);
+	border: 1px solid rgba(174, 174, 174, 0.4);
+	cursor: pointer;
+	font-family: 'Teko', sans-serif;
+	color: white;
+	border-radius: 2px;
 }

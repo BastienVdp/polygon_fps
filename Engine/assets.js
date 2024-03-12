@@ -5,8 +5,12 @@ export const assets = {
 			source: 'models/map_c.glb'
 		},
 		{
-			name: 'training',
-			source: 'models/training.glb'
+			name: 'lobby',
+			source: 'models/lobby.glb'
+		},
+		{
+			name: 'soldier',
+			source: 'models/soldier.glb'
 		},
 	],
 	weapons: [

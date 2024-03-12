@@ -1,7 +1,4 @@
-import UI from "@Game/UI/UI";
-import MiniMap from "@Game/Maps/MiniMap";
 
-import { MapsEnum } from "@Config/Enums/GameEnum";
 import DesertMap from "@Game/Maps/DesertMap";
 import Player from "@Game/Gameplay/Player/Player";
 import FirstPersonLayer from "../Game/Layers/FirstPersonLayer";
@@ -27,10 +24,13 @@ export default class Game
 	initialize()
 	{
 		this.setLayers();
+		// this.ui = new UI();
 
 		this.desertMap = new DesertMap();
-		this.player = new Player();
-		this.ui = new UI();
+		this.player = new Player({
+			id: 1,
+			name: 'Neitsab',
+		});
 	}
 
 	/**
@@ -44,6 +44,10 @@ export default class Game
 		this.skyLayer = new SkyLayer();
 	}
 
+	start()
+	{
+		this.update();
+	}
 	/**
 	 * Update the game
 	 * @method update
@@ -52,6 +56,5 @@ export default class Game
 	update() 
 	{
 		this.player.update();
-		this.ui.update();
 	}
 }

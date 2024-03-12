@@ -85,6 +85,8 @@ export default class FirstPersonControls
             UserInputEventEnum.MOVE_BACKWARD_UP,
             UserInputEventEnum.MOVE_LEFT_UP,
             UserInputEventEnum.MOVE_RIGHT_UP,
+            UserInputEventEnum.BUTTON_ADS_DOWN,
+            UserInputEventEnum.BUTTON_ADS_UP
         ].includes(eventType);
     }
 
@@ -346,7 +348,7 @@ export default class FirstPersonControls
      */
     shift()
     {
-        this.params.movespeedFactor = 3.0;
+        this.params.movespeedFactor = this.keyStates.get('BUTTON_ADS_DOWN') ? 2.5 : 3.5;
     }
 
     /**

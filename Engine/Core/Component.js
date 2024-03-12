@@ -1,3 +1,4 @@
+import Engine from '@/Engine';
 /**
  * Component class
  * @class Component
@@ -11,6 +12,8 @@ export default class Component
         this.selectorChildren = {
             ...elements,
         };
+
+		this.engine = new Engine();
 
         this.init();
     }
@@ -65,4 +68,22 @@ export default class Component
             }
         });
     }
+
+    throttle(func, timeFrame)
+    {
+        clearTimeout(this.searchTimeout);
+		this.searchTimeout = setTimeout(() => {
+			func();
+		}, 300); 
+    }
+    
+    show()
+	{
+		this.element.classList.remove('not-visible');
+	}
+
+	hide()
+	{
+		this.element.classList.add('not-visible');
+	}
 }

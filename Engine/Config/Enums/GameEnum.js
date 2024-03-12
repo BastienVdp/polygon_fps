@@ -1,6 +1,8 @@
 export const GameEnums = {
+	LAUNCH: 'launch',
 	READY: 'ready',
 	LOADING: 'loading',
+	
 }
 
 export const LoadingEnum = {

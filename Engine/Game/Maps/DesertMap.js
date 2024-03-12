@@ -28,7 +28,9 @@ export default class DesertMap extends Map
 			}
 		};
 
-		this.folder = this.engine.debug.addFolder({ title: 'Desert Map', expanded: false });
+		if(this.engine.debug) {
+			this.folder = this.engine.debug.addFolder({ title: 'Desert Map', expanded: false });
+		}
 
 		this.initialize();
 	}
@@ -48,7 +50,9 @@ export default class DesertMap extends Map
 		this.setEnvironment();
 
 		// this.setSky();
-		this.setDebug();
+		if(this.folder) {
+			this.setDebug();
+		}
 	}
 
 	/**
@@ -126,6 +130,7 @@ export default class DesertMap extends Map
 			});
 		});
 
+		
 		this.subfolder = this.engine.debug.addFolder({ title: 'Lights', expanded: false });
 
 		this.subfolder.addBinding(this.settings.directionalLight, 'intensity', {

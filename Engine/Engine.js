@@ -13,9 +13,17 @@ import { LoadingEnum } from "@Config/Enums/GameEnum";
 import { 
 	EngineEventPipe, 
 	LoadingEvent, 
-	ResizeEvent 
+	ResizeEvent,
+	GameEvent
 } from "@Pipes/EngineEventPipe";
-import {Pane} from "tweakpane"
+import {Pane} from "tweakpane";
+
+import UI from "@/UI/UI";
+import { GameEnums } from "@Config/Enums/GameEnum";
+import { PointLockEventEnum } from "@Config/Enums/EventsEnum";
+import { PointLockEvent } from "./Pipes/EngineEventPipe";
+import { GameEventEnum } from "./Config/Enums/EventsEnum";
+
 
 /**
  * Engine class
@@ -34,9 +42,9 @@ export default class Engine
 		}
 		Engine.instance = this;
 
-		this.debug = new Pane({
+		// this.debug = new Pane({
 
-		});
+		// });
 		this.octree = new Octree();
 
 		this.canvas = document.querySelector('#game');
@@ -80,15 +88,19 @@ export default class Engine
 			level: new Scene(),
 			player: new Scene(),
 			skybox: new Scene(),
+			lobby: new Scene(),
 		};
+
+		this.scenes.lobby.background = new Color(0x000000);
 
 	}
 
 	createCameras()
 	{
 		this.cameras = {
+			uiCamera: new PerspectiveCamera(75, this.sizes.width / this.sizes.height, 0.1, 1000),
 			playerCamera: new PerspectiveCamera(75, this.sizes.width / this.sizes.height, 0.1, 1000),
-			firstPersonCamera: new PerspectiveCamera(50, this.sizes.width / this.sizes.height, 0.01, 100),
+			firstPersonCamera: new PerspectiveCamera(50, this.sizes.width / this.sizes.height, 0.0001, 1000),
 		};
 	}
 
@@ -96,7 +108,19 @@ export default class Engine
 	{
 		this.game = new Game();
 	}
+	
+	startGame()
+	{
+		this.pointLock.pointLockListen();
+		this.pointLock.lock();
+		this.game.start();
+	}
 
+	createUI()
+	{
+		this.ui = new UI();
+	
+	}
 	/**
 	 * Register events
 	 * @method registerEvents
@@ -106,6 +130,14 @@ export default class Engine
 	{
 		EngineEventPipe.addEventListener(LoadingEvent.type, this.onLoading);
 		EngineEventPipe.addEventListener(ResizeEvent.type, this.onResize);
+
+		EngineEventPipe.addEventListener(GameEvent.type, e => {
+			switch(e.detail.enum) {
+				case GameEventEnum.LAUNCH: 
+					this.startGame();
+					break;
+			}
+		})
 	}
 
 	/**
@@ -122,6 +154,7 @@ export default class Engine
 				break;
 			case LoadingEnum.COMPLETE:
 				this.createGame();
+				this.createUI();
 				break;
 		}
 	}

@@ -20,9 +20,13 @@ const bulletPositionDelta = bulletDeltaPositionArray2ScreenCoordArray(ak47Bullet
 
 export default class M416 extends AutomaticWeapon
 {
+	static instance; 
 	constructor({ camera, id })
 	{
 		super(bulletPosition, bulletPositionDelta, camera, id);
+
+		if(M416.instance) return M416.instance;
+		M416.instance = this;
 
 		this.engine = new Engine();
 
@@ -36,11 +40,12 @@ export default class M416 extends AutomaticWeapon
 		this.setClassification(WeaponEnum.RIFLE);
 		this.setName("M416");
 		this.setMagazineSize(30);
-		this.setFireRate(100 / 600);
-		this.setRecoverTime(0.001);
-		this.setReloadTime(0);
-		this.setRecoilControl(8);
-		this.setAccurateRange(50);
+		this.setBulletLeftMax(60);
+		this.setFireRate(60 / 600); // Fire rate per second
+		this.setRecoverTime(0.368); // Time to recover from recoil
+		this.setReloadTime(3); // Time to reload in seconds
+		this.setRecoilControl(6); // Recoil control
+		this.setAccurateRange(120); // Accurate range in meters
 		this.setBulletLeft(this.magazineSize);
 
 		super.init();

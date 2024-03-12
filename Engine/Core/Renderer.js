@@ -6,7 +6,8 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { FXAAShader } from  'three/addons/shaders/FXAAShader.js';
 
 import Engine from "@/Engine";
-
+import { EngineEventPipe, GameEvent } from '@Pipes/EngineEventPipe';
+import { GameEnums } from '@/Config/Enums/GameEnum';
 /**
  * Renderer class
  * @class Renderer
@@ -23,9 +24,12 @@ export default class Renderer
 
 		this.settings = {
 			exposure: 0.87,
-
 		}
-		this.folder = this.debug.addFolder({ title: 'Renderer', expanded: false });
+
+		if(this.debug) {
+			this.folder = this.debug.addFolder({ title: 'Renderer', expanded: false });
+		}
+
 		this.initiliaze();
 	}
 
@@ -35,6 +39,27 @@ export default class Renderer
 	 * @description Initialize the renderer
 	 */
 	initiliaze()
+	{
+		this.setRenderer();
+		this.setEffectComposer();
+
+		this.registerEvents();
+
+		if(this.folder) this.setDebug();
+	}
+
+	registerEvents()
+	{
+		EngineEventPipe.addEventListener(GameEvent.type, (e) => {
+			switch(e.detail.enum) {
+				case GameEnums.LAUNCH:
+					this.renderLobby = false;
+					break;
+			}
+		});
+	}
+
+	setRenderer()
 	{
 		this.renderer = new THREE.WebGLRenderer({
             canvas: this.canvas,
@@ -64,10 +89,7 @@ export default class Renderer
 		});
 		this.target.samples = 8;
 
-		this.setEffectComposer();
-		this.setDebug();
 	}
-
 	/**
 	 * Set the effect composer
 	 * @method setEffectComposer
@@ -121,6 +143,12 @@ export default class Renderer
 		this.composer.setSize(this.sizes.width, this.sizes.height);
 	}
 
+	setRenderLobby(isLobby)
+	{
+		this.renderLobby = isLobby;
+	}
+
+
 	/**
 	 * Update the renderer
 	 * @method update
@@ -130,13 +158,18 @@ export default class Renderer
 	{
 		this.composer.render();
 
-		this.renderer.render(this.engine.scenes.skybox, this.engine.cameras.playerCamera);
-		this.renderer.clearDepth();
-
-		this.renderer.render(this.engine.scenes.level, this.engine.cameras.playerCamera);
-		this.renderer.clearDepth();
-
-		this.renderer.render(this.engine.scenes.player, this.engine.cameras.firstPersonCamera);
-		this.renderer.clearDepth();		
+		if(this.renderLobby) {
+			this.renderer.render(this.engine.scenes.skybox, this.engine.cameras.playerCamera);
+			this.renderer.clearDepth();
+			this.renderer.render(this.engine.scenes.lobby, this.engine.cameras.uiCamera);
+			this.renderer.clearDepth();		
+		} else {
+			this.renderer.render(this.engine.scenes.skybox, this.engine.cameras.playerCamera);
+			this.renderer.clearDepth();
+			this.renderer.render(this.engine.scenes.level, this.engine.cameras.playerCamera);
+			this.renderer.clearDepth();
+			this.renderer.render(this.engine.scenes.player, this.engine.cameras.firstPersonCamera);
+			this.renderer.clearDepth();		
+		}		
 	}
 }

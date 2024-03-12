@@ -10,7 +10,7 @@ import { InventoryEnum, mapIventorySlotByWeaponClassificationEnum } from "@Enums
 const {
     BUTTON_SWITCH_PRIMARY_WEAPON,
     BUTTON_SWITCH_SECONDARY_WEAPON,
-    BUTTON_SWITCH_MELEE_WEAPON,
+    BUTTON_SWITCH_SNIPER_WEAPON,
     BUTTON_SWITCH_LAST_WEAPON
 } = UserInputEventEnum;
 
@@ -40,8 +40,8 @@ export default class InventoryManager
      */
 	initialize()
 	{
-		this.weapons.set(InventoryEnum.HANDS, null);
-        this.switchWeapon(InventoryEnum.HANDS);
+		// this.weapons.set(InventoryEnum.HANDS, null);
+        this.switchWeapon(InventoryEnum.SECONDARY);
 
 		this.registerEventListeners();
 	}
@@ -71,12 +71,13 @@ export default class InventoryManager
             case BUTTON_SWITCH_SECONDARY_WEAPON:
                 this.switchWeapon(InventoryEnum.SECONDARY);
                 break;
-            case BUTTON_SWITCH_MELEE_WEAPON:
-                this.switchWeapon(InventoryEnum.MELEE);
+            case BUTTON_SWITCH_SNIPER_WEAPON:
+                this.switchWeapon(InventoryEnum.PRIMARY);
                 break;
             case BUTTON_SWITCH_LAST_WEAPON:
                 this.switchWeapon(this.lastWeapon);
                 break;
+
         }
 	}
 
@@ -86,12 +87,13 @@ export default class InventoryManager
      * @description Switches the player's weapon.
      * @param {String} targetInventory - The target inventory slot.
      */
-	switchWeapon(targetInventory) 
+	switchWeapon(targetInventory, fromPanel = false) 
 	{
-        if (this.currentWeapon === targetInventory) return;
+        // if (this.currentWeapon === targetInventory && !fromPanel) return;
 
         this.animateWeaponSwitch(this.currentWeapon, targetInventory);
         
+        WeaponEquipEvent.detail.enum = WeaponAnimationEventEnum.DRAW;
         WeaponEquipEvent.detail.weapon = this.weapons.get(targetInventory);
         GameEventPipe.dispatchEvent(WeaponEquipEvent);
         
@@ -108,7 +110,6 @@ export default class InventoryManager
      */
 	animateWeaponSwitch(currentInventory, targetInventory) 
 	{
-        console.log('animateWeaponSwitch', currentInventory, targetInventory);
         this.dispatchWeaponEvent(WeaponAnimationEventEnum.REMOVE, currentInventory);
         this.dispatchWeaponEvent(WeaponAnimationEventEnum.DRAW, targetInventory);
     }
@@ -132,20 +133,6 @@ export default class InventoryManager
     }
 
     /**
-     * Is weapon animation
-     * @method isWeaponAnimation
-     * @description Determines if the animation is a weapon animation.
-     * @param {String} animationName - The animation name.
-     * @param {String} inventorySlot - The inventory slot.
-     * @returns {Boolean} - Whether or not the animation is a weapon animation.
-     */
-	isWeaponAnimation(animationName, inventorySlot) 
-	{
-        const weapon = this.weapons.get(inventorySlot);
-        return weapon && (animationName === weapon.animations.get('Wave'));
-    }
-
-    /**
      * Pick up a weapon
      * @method pickUp
      * @description Adds a weapon to the player's inventory.
@@ -157,6 +144,17 @@ export default class InventoryManager
         if (!this.weapons.get(inventorySlot)) {
             this.weapons.set(inventorySlot, weapon);
         }
+    }
+
+    removeFromInventory(weaponName)
+    {
+        this.weapons.forEach((weapon, key) => {
+            if(weapon.name === weaponName) {
+                this.weapons.set(InventoryEnum.PRIMARY, null);
+            }
+        });
+
+      
     }
 
     /**
