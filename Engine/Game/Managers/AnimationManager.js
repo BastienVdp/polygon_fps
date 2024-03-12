@@ -1,47 +1,25 @@
 import * as THREE from 'three';
 import Engine from '@/Engine';
-import {
-    AnimationEventPipe,
-    FirstPersonAnimationEvent
-} from '@Pipes/AnimationEventPipe';
-import {
-    UserInputEventPipe,
-    UserInputEvent
-} from '@Pipes/UserInputEventPipe';
-import {
-    WeaponAnimationEventEnum,
-    UserInputEventEnum
-} from '@Config/Enums/EventsEnum';
-
-const {
-    REMOVE,
-    DRAW,
-    IDLE,
-    FIRE,
-    RELOAD
-} = WeaponAnimationEventEnum;
-
+import { AnimationEventPipe, FirstPersonAnimationEvent } from '@Pipes/AnimationEventPipe';
+import { UserInputEventPipe, UserInputEvent } from '@Pipes/UserInputEventPipe';
+import { WeaponAnimationEventEnum, UserInputEventEnum } from '@Config/Enums/EventsEnum';
 import { WeaponEnum } from '@Enums/WeaponEnum';
+
 /**
- * AnimationManager class
  * @class AnimationManager
- * @description Manages the animations for the weapons.
+ * @description The animation manager class
  */
 export default class AnimationManager 
 {
-
-    /**
+    /** 
      * Constructor
-     * @constructor
-     * @param {Object} weapon - The weapon to manage the animations for.
+     * @param {Weapon} weapon - The weapon object
      */
     constructor({ weapon }) 
     {
         this.engine = new Engine();
         this.weapon = weapon;
-        
         this.animations = {};
-
         this.states = {
             running: false,
             walking: false,
@@ -50,20 +28,25 @@ export default class AnimationManager
             reloading: false,
             firing: false
         };
-
         this.initialize();
     }
 
+    /**
+     * @method initialize
+     * @description Initialize the animation manager and register input events
+     * @returns {void}
+     */
     initialize() 
     {
+        this.mixer = this.engine.resources.get(`${this.weapon.name}_AnimationMixer`);
         this.registerInputEvents();
         this.initializeAnimations();
     }
 
     /**
-     * Initialize the animations for the weapon
      * @method initializeAnimations
-     * @description Initializes the animations for the weapon.
+     * @description Initialize the animations for the weapon and configure them
+     * @returns {void}
      */
     initializeAnimations() 
     {
@@ -75,12 +58,12 @@ export default class AnimationManager
     }
 
     /**
-     * Configure the animation
      * @method configureAnimation
-     * @description Configures the animation based on the name.
-     * @param {String} name - The name of the animation.
+     * @description Configure the animation based on the name
+     * @param {string} name - The name of the animation
+     * @returns {void}
      */
-    configureAnimation(name)
+    configureAnimation(name) 
     {
         const animation = this.animations[name];
         switch (name) {
@@ -114,13 +97,12 @@ export default class AnimationManager
                 this.setupLoopRepeatAnimation(animation);
                 break;
         }
-       
     }
 
     /**
-     * isWeaponM416
      * @method isWeaponM416
-     * @returns {Boolean} - Whether the weapon is an M416.
+     * @description Check if the weapon is M416
+     * @returns {boolean} - True if the weapon is M416
      */
     isWeaponM416() 
     {
@@ -128,10 +110,19 @@ export default class AnimationManager
     }
 
     /**
-     * getAnimationClipName
+     * @method isSniper
+     * @description Check if the weapon is a sniper
+     * @returns {boolean} - True if the weapon is a sniper
+     */
+    isSniper() 
+    {
+        return this.weapon.classification === WeaponEnum.SNIPER;
+    }
+
+    /**
      * @method getAnimationClipName
-     * @description Gets the name of the animation clip.
-     * @param {THREE.AnimationAction} animation - The animation action.
+     * @description Get the animation clip name
+     * @param {AnimationAction} animation - The animation action
      */
     getAnimationClipName(animation) 
     {
@@ -139,9 +130,9 @@ export default class AnimationManager
     }
 
     /**
-     * handleJumpAnimationFinished
      * @method handleJumpAnimationFinished
-     * @description Handles the jump animation finished event.
+     * @description Set the jumping state to false when the jump animation is finished and play the right animation based on the current state
+     * @returns {void}
      */
     handleJumpAnimationFinished() 
     {
@@ -157,52 +148,50 @@ export default class AnimationManager
     }
 
     /**
-     * setupOnceAnimation
-     * @method setupOnceAnimation
-     * @description Sets up the animation to loop once.
-     * @param {THREE.AnimationAction} animation - The animation action.
+     * @method setupOnceAnimation  
+     * @description Setup the animation to play once, clamp when finished and set the time scale
+     * @param {AnimationAction} animation - The animation action
+     * @returns {void}
      */
     setupOnceAnimation(animation) 
     {
         animation.setLoop(THREE.LoopOnce);
         animation.clampWhenFinished = true;
-
-        if (this.isWeaponM416()) {
-            animation.timeScale = 0.8;
-        } else {
-            animation.timeScale = 2.0;
-        }
+        animation.timeScale = this.isWeaponM416() ? 0.8 : 2.0;
     }
 
-    /**
-     * setupLoopOnceAnimation
+    /** 
      * @method setupLoopOnceAnimation
-     * @description Sets up the animation to loop once.
-     * @param {THREE.AnimationAction} animation - The animation action.
-     * @param {Number} timeScale - The time scale for the animation.
+     * @description Setup the animation to play once and set the time scale
+     * @param {AnimationAction} animation - The animation action
+     * @param {number} timeScale - The time scale
+     * @returns {void}
      */
     setupLoopOnceAnimation(animation, timeScale = 1) 
     {
         animation.setLoop(THREE.LoopOnce);
-        animation.timeScale = timeScale
+        animation.timeScale = timeScale;
     }
 
-    setupJumpOnceAnimation(animation, timeScale = 1.2)
+    /** 
+     * @method setupJumpOnceAnimation
+     * @description Setup the jump animation to play once and set the time scale
+     * @param {AnimationAction} animation - The animation action
+     * @param {number} timeScale - The time scale
+     * @returns {void}
+     */
+    setupJumpOnceAnimation(animation, timeScale = 1.2) 
     {
         animation.setLoop(THREE.LoopOnce);
-        if (this.isWeaponM416()) {
-            animation.timeScale = 0.7;
-        } else {
-            animation.timeScale = timeScale;
-        }
+        animation.timeScale = this.isWeaponM416() ? 0.7 : timeScale;
     }
 
     /**
-     * setupLoopRepeatAnimation
      * @method setupLoopRepeatAnimation
-     * @description Sets up the animation to loop repeat.
-     * @param {THREE.AnimationAction} animation - The animation action.
-     * @param {Number} timeScale - The time scale for the animation.
+     * @description Setup the animation to loop repeat and set the time scale
+     * @param {AnimationAction} animation - The animation action
+     * @param {number} timeScale - The time scale
+     * @returns {void}
      */
     setupLoopRepeatAnimation(animation, timeScale = 1.0) 
     {
@@ -211,10 +200,12 @@ export default class AnimationManager
     }
 
     /**
-     * registerInputEvents
      * @method registerInputEvents
-     * @description Registers the input events for the animation manager.
-     */
+     * @description Register the input events
+     * @listens FirstPersonAnimationEvent
+    *  @listens UserInputEvent
+     * @returns {void}
+    */
     registerInputEvents() 
     {
         AnimationEventPipe.addEventListener(FirstPersonAnimationEvent.type, e => {
@@ -226,9 +217,8 @@ export default class AnimationManager
             this.handleUserInputEvent(e.detail.enum);
         });
 
-   
-        if(this.engine.resources.get(`${this.weapon.name}_AnimationMixer`)) {
-            this.engine.resources.get(`${this.weapon.name}_AnimationMixer`).addEventListener('finished', e => {
+        if (this.mixer) {
+          this.mixer.addEventListener('finished', e => {
                 if (e.type === 'finished') {
                     this.handleAnimationFinished(e);
                 }
@@ -236,11 +226,11 @@ export default class AnimationManager
         }
     }
 
-    /**
-     * handleUserInputEvent
+    /** 
      * @method handleUserInputEvent
-     * @description Handles the user input event.
-     * @param {UserInputEventEnum} inputEvent - The user input event.
+     * @description Handle the user input event
+     * @param {UserInputEventEnum} inputEvent - The user input event
+     * @returns {void}
      */
     handleUserInputEvent(inputEvent) 
     {
@@ -271,59 +261,85 @@ export default class AnimationManager
         }
     }
 
-    handleADS(isADS)
+    /** 
+     * @method handleADS
+     * @description Handle the aim down sight event
+     * @param {boolean} isADS - True if the player is aiming down sight
+     * @returns {void}
+     */
+    handleADS(isADS) 
     {
         if (!this.states.reloading && this.weapon.active) {
-            if(!this.isSniper()) this.stopAllAnimations();
+            if (!this.isSniper()) this.stopAllAnimations();
             this.states.ads = isADS;
-    
-            // Vérifier si c'est un sniper
+
             if (this.isSniper()) {
-                if (isADS) {
-                    // Si c'est un sniper et qu'il vise
-                    this.weapon.setVisible(false);
-                    this.weapon.scope.visible = true;
-                } else {
-                    this.weapon.setVisible(true);
-                    this.weapon.scope.visible = false;
-                }
+                this.handleSniperADSAnimation(isADS);
             } else {
-                // Si ce n'est pas un sniper, on gère l'animation ADS normalement
-                if(!isADS) {
-                    this.playOrStopAnimation(`${this.weapon.name}_idle`, true);
-                } else {
-                    this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, isADS);
-                }
+                this.handleNormalADSAnimation(isADS);
             }
         }
     }
 
-    isSniper()
+
+    /**
+     * @method handleSniperADSAnimation
+     * @description Handle the sniper aim down sight animation
+     * @param {boolean} isADS - True if the player is aiming down sight
+     * @returns {void}
+     */
+    handleSniperADSAnimation(isADS) 
     {
-        return this.weapon.classification === WeaponEnum.SNIPER;
+        if (isADS) {
+            this.weapon.setVisible(false);
+            this.weapon.scope.visible = true;
+        } else {
+            this.weapon.setVisible(true);
+            this.weapon.scope.visible = false;
+        }
     }
 
     /**
-     * handleRunning
+     * @method handleNormalADSAnimation
+     * @description Handle the normal aim down sight animation
+     * @param {boolean} isADS - True if the player is aiming down sight
+     * @returns {void}
+     */
+    handleNormalADSAnimation(isADS) 
+    {
+        if (!isADS) {
+            if(this.states.running) this.playOrStopAnimation(`${this.weapon.name}_run`, true);
+            if(this.states.walking) this.playOrStopAnimation(`${this.weapon.name}_walk`, true);
+            this.playOrStopAnimation(`${this.weapon.name}_idle`, true);
+        } else {
+            this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, isADS);
+        }
+    }
+
+    /** 
      * @method handleRunning
-     * @description Handles the running state.
-     * @param {Boolean} isRunning - Whether the player is running.
+     * @description Handle the running event
+     * @param {boolean} isRunning - True if the player is running
+     * @returns {void}
      */
     handleRunning(isRunning) 
     {
         this.states.running = isRunning;
 
-        if (!this.states.running && !this.states.ads) {
-            this.playAnimation(IDLE);
+        if (!this.states.walking && !this.states.ads) {
+            this.playAnimation(WeaponAnimationEventEnum.IDLE);
         }
-        if(this.states.walking) this.playOrStopAnimation(`${this.weapon.name}_run`, this.states.running);
+
+        if (this.states.walking && !this.states.ads && !this.states.reloading) {
+            this.playOrStopAnimation(`${this.weapon.name}_run`, this.states.running);
+        }
     }
 
     /**
-     * handleWalking
      * @method handleWalking
-     * @description Handles the walking state.
-     * @param {Boolean} isWalking - Whether the player is walking.
+     * @description Handle the walking event
+     * @param {boolean} isWalking - True if the player is walking
+     * @returns {void}
      */
     handleWalking(isWalking) 
     {
@@ -331,39 +347,40 @@ export default class AnimationManager
             this.states.walking = isWalking;
 
             if (!this.states.walking && !this.states.ads) {
-                this.playAnimation(IDLE);
+                this.playAnimation(WeaponAnimationEventEnum.IDLE);
             }
         }
 
         this.playOrStopAnimation(`${this.weapon.name}_walk`, this.states.walking && !this.states.running && !this.states.reloading && !this.states.ads);
-        
-        if(this.states.running) {
+
+        if (this.states.running) {
             this.playOrStopAnimation(`${this.weapon.name}_run`, this.states.running);
         }
 
-        if(!this.states.walking) {
+        if (!this.states.walking) {
             this.playOrStopAnimation(`${this.weapon.name}_run`, false);
         }
     }
 
     /**
-     * handleJump
      * @method handleJump
-     * @description Handles the jump state.
+     * @description Handle the jump event
+     * @returns {void}
      */
     handleJump() 
     {
+        if (this.states.jumping) return;
         this.states.jumping = true;
         this.playOrStopAnimation(`${this.weapon.name}_walk`, false);
         this.playOrStopAnimation(`${this.weapon.name}_run`, false);
-        if(!this.states.ads) this.stopAndPlayAnimation(`${this.weapon.name}_jump`);
+        if (!this.states.ads) this.stopAndPlayAnimation(`${this.weapon.name}_jump`);
     }
 
     /**
-     * handleAnimationFinished
      * @method handleAnimationFinished
-     * @description Handles the animation finished event.
-     * @param {Event} e - The event.
+     * @description Handle the animation finished event
+     * @param {AnimationAction} e - The animation action
+     * @returns {void}
      */
     handleAnimationFinished(e) 
     {
@@ -377,9 +394,6 @@ export default class AnimationManager
             case this.getAnimationClipName(this.animations[`${this.weapon.name}_draw`]):
                 this.handleDrawAnimationFinished();
                 break;
-            // case this.getAnimationClipName(this.animations[`${this.weapon.name}_remove`]):
-            //     this.handleRemoveAnimationFinished();
-            //     break;
             case this.getAnimationClipName(this.animations[`${this.weapon.name}_jump`]):
                 this.handleJumpAnimationFinished();
                 break;
@@ -388,20 +402,29 @@ export default class AnimationManager
                 break;
             case this.getAnimationClipName(this.animations[`${this.weapon.name}_ads_fire`]):
                 this.handleAdsAnimation();
+                break;
         }
     }
 
-    handleAdsAnimation()
+    /**
+     * @method handleAdsAnimation
+     * @description Handle the aim down sight animation
+     * @returns {void}
+     */
+    handleAdsAnimation() 
     {
         this.stopAllAnimations();
-        this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, true);
-        // this.playOrStopAnimation(`${this.weapon.name}_ads_fire`, this.states.ads);
+        if (this.isSniper()) {
+            this.playOrStopAnimation(`${this.weapon.name}_idle`, true);
+        } else {
+            this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, true);
+        }
     }
-    
+
     /**
-     * handleReloadAnimationFinished
      * @method handleReloadAnimationFinished
-     * @description Handles the reload animation finished event.
+     * @description Handle the reload animation finished event
+     * @returns {void}
      */
     handleReloadAnimationFinished() 
     {
@@ -410,64 +433,63 @@ export default class AnimationManager
         this.states.reloading = false;
         this.playOrStopAnimation(`${this.weapon.name}_run`, this.states.running);
         this.playOrStopAnimation(`${this.weapon.name}_walk`, this.states.walking && !this.states.reloading);
-        this.playAnimation(IDLE);
+        this.playAnimation(WeaponAnimationEventEnum.IDLE);
     }
 
     /**
-     * handleDrawAnimationFinished
      * @method handleDrawAnimationFinished
-     * @description Handles the draw animation finished event.
+     * @description Handle the draw animation finished event
+     * @returns {void}
      */
     handleDrawAnimationFinished() 
     {
         this.weapon.setActive(true);
-        this.playAnimation(IDLE);
+        this.playAnimation(WeaponAnimationEventEnum.IDLE);
     }
 
     /**
-     * playAnimation
      * @method playAnimation
-     * @description Plays the animation based on the event.
-     * @param {WeaponAnimationEventEnum} event - The weapon animation event.
+     * @description Play the animation based on the event
+     * @param {WeaponAnimationEventEnum} event - The weapon animation event
+     * @returns {void}
      */
     playAnimation(event) 
     {
         switch (event) {
-            case REMOVE:
+            case WeaponAnimationEventEnum.REMOVE:
                 this.handleRemoveAnimation();
                 break;
-            case DRAW:
+            case WeaponAnimationEventEnum.DRAW:
                 this.handleDrawAnimation();
                 break;
-            case IDLE:
+            case WeaponAnimationEventEnum.IDLE:
                 this.handleIdleAnimation();
                 break;
-            case FIRE:
+            case WeaponAnimationEventEnum.FIRE:
                 this.handleFireAnimation();
                 break;
-            case RELOAD:
+            case WeaponAnimationEventEnum.RELOAD:
                 this.handleReloadAnimation();
                 break;
         }
     }
 
     /**
-     * handleRemoveAnimation
      * @method handleRemoveAnimation
-     * @description Handles the remove animation.
+     * @description Handle the remove animation
+     * @returns {void}
      */
     handleRemoveAnimation() 
     {
         this.stopAllAnimations();
-        // this.fadeOutAllAnimations(0.5);
         this.weapon.setActive(false);
         this.weapon.setVisible(false);
     }
 
     /**
-     * handleDrawAnimation
      * @method handleDrawAnimation
-     * @description Handles the draw animation.
+     * @description Handle the draw animation
+     * @returns {void}
      */
     handleDrawAnimation() 
     {
@@ -476,10 +498,11 @@ export default class AnimationManager
         this.stopAndPlayAnimation(`${this.weapon.name}_draw`);
     }
 
+
     /**
-     * handleIdleAnimation
      * @method handleIdleAnimation
-     * @description Handles the idle animation.
+     * @description Handle the idle animation
+     * @returns {void}
      */
     handleIdleAnimation() 
     {
@@ -487,20 +510,20 @@ export default class AnimationManager
         this.stopAndPlayAnimation(`${this.weapon.name}_idle`);
     }
 
-
     /**
-     * handleFireAnimation
      * @method handleFireAnimation
-     * @description Handles the fire animation.
+     * @description Handle the fire animation
+     * @returns {void}
      */
     handleFireAnimation() 
     {
-        // this.stopAndPlayAnimation(`${this.weapon.name}_idle`);
         this.fadeOutAllAnimations(0.5);
         this.states.firing = true;
-        if(this.isSniper() || !this.states.ads) {
+
+        if (this.isSniper() || !this.states.ads) {
             this.stopAndPlayAnimation(`${this.weapon.name}_fire`);
-            if(this.isSniper()) {
+
+            if (this.isSniper()) {
                 this.weapon.setVisible(true);
                 this.weapon.scope.visible = false;
             }
@@ -509,26 +532,22 @@ export default class AnimationManager
         }
     }
 
-
     /**
-     * handleReloadAnimation
      * @method handleReloadAnimation
-     * @description Handles the reload animation.
+     * @description Handle the reload animation
+     * @returns {void}
      */
     handleReloadAnimation() 
     {
         this.stopAllAnimations();
-
         this.states.reloading = true;
         this.stopAndPlayAnimation(`${this.weapon.name}_reload`);
     }
 
-
     /**
-     * stopAndPlayAnimation
      * @method stopAndPlayAnimation
-     * @description Stops and plays the animation.
-     * @param {String} animationName - The name of the animation.
+     * @description Stop and play the animation
+     * @param {string} animationName - The name of the animation
      */
     stopAndPlayAnimation(animationName) 
     {
@@ -536,11 +555,11 @@ export default class AnimationManager
     }
 
     /**
-     * playOrStopAnimation
      * @method playOrStopAnimation
-     * @description Plays or stops the animation.
-     * @param {String} animationName - The name of the animation.
-     * @param {Boolean} shouldPlay - Whether the animation should play.
+     * @description Play or stop the animation
+     * @param {string} animationName - The name of the animation
+     * @param {boolean} shouldPlay - True if the animation should play
+     * @returns {void}
      */
     playOrStopAnimation(animationName, shouldPlay) 
     {
@@ -552,10 +571,10 @@ export default class AnimationManager
     }
 
     /**
-     * fadeOutAllAnimations
      * @method fadeOutAllAnimations
-     * @description Fades out all animations.
-     * @param {Number} duration - The duration of the fade out.
+     * @description Fade out all the animations
+     * @param {number} duration - The duration of the fade out
+     * @returns {void}
      */
     fadeOutAllAnimations(duration) 
     {
@@ -565,9 +584,9 @@ export default class AnimationManager
     }
 
     /**
-     * stopAllAnimations
      * @method stopAllAnimations
-     * @description Stops all animations.
+     * @description Stop all the animations
+     * @returns {void}
      */
     stopAllAnimations() 
     {
@@ -575,21 +594,27 @@ export default class AnimationManager
             animation.reset().stop();
         });
 
-        Object.values(this.states).forEach(state => state = false);
+        Object.values(this.states).forEach(state => (state = false));
     }
 
-
-    getAnimationAction(name)
+    /**
+     * @method getAnimationAction  
+     * @description Get the animation action based on the name
+     * @param {string} name - The name of the animation
+     * @returns {AnimationAction} - The animation action
+     */
+    getAnimationAction(name) 
     {
         return this.animations[this.getAnimationClipName(name)];
     }
+
     /**
-     * update
      * @method update
-     * @description Updates the animation manager.
+     * @description Update the animation manager
+     * @returns {void}
      */
     update() 
     {
-        this.engine.resources.get(`${this.weapon.name}_AnimationMixer`).update(this.engine.time.delta);
+        this.mixer.update(this.engine.time.delta);
     }
 }
