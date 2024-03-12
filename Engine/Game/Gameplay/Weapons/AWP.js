@@ -20,13 +20,13 @@ export default class AWP extends SemiAutomaticWeapon
 	{
 		this.setClassification(WeaponEnum.SNIPER);
 		this.setName("AWP");
-		this.setMagazineSize(12);
-		this.setBulletLeftMax(12);
-		this.setFireRate(90 / 60);
-		this.setRecoverTime(0.34);
-		this.setReloadTime(1);
-		this.setRecoilControl(1.5);
-		this.setAccurateRange(120);
+		this.setMagazineSize(12); // The magazine size
+		this.setBulletLeftMax(12); // The maximum bullet left
+		this.setFireRate(90 / 60); // The fire rate per second
+		this.setRecoverTime(0.34); // The recover time for the recoil
+		this.setReloadTime(1); // The reload time
+		this.setRecoilControl(1.5);  // The recoil control
+		this.setAccurateRange(120); // The accurate range
 		this.setBulletLeft(this.magazineSize);
 
 		this.init();

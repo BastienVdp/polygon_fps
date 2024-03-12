@@ -3,12 +3,15 @@ import Engine from "@/Engine";
 import BaseWeapon from "./BaseWeapon";
 
 import { WeaponAnimationEventEnum } from "@Enums/EventsEnum";
-import WeaponSystem from "../WeaponSystem";
 import AnimationManager from "@Game/Managers/AnimationManager";
 
+/**
+ * @class AutomaticWeapon
+ * @description A class to manage the automatic weapon
+ */
 export default class AutomaticWeapon extends BaseWeapon
 {
-	constructor(bulletPosition, bulletPositionDelta, camera, id) 
+	constructor(bulletPosition, bulletPositionDelta, camera) 
     {
         super(id);
 
@@ -20,6 +23,7 @@ export default class AutomaticWeapon extends BaseWeapon
         this.camera = camera;
     }
 
+
     init()
     {
         super.init();
@@ -29,6 +33,12 @@ export default class AutomaticWeapon extends BaseWeapon
     }
 
 
+    
+    /**
+     * @method initializeInterpolants
+     * @description sets up linear interpolants for bullet positions and deltas based on given positions and values.
+     * @returns {void}
+     */
     initializeInterpolants() 
     {
         const positions = new Float32Array(this.magazineSize).map((_, i) => i * this.fireRate);
@@ -40,7 +50,14 @@ export default class AutomaticWeapon extends BaseWeapon
         );
     }
 
-
+    
+   /**
+    * @method fire
+    * @description Fires the weapon, handles shooting mechanics, including calculating bullet position, adjusting camera rotation, and updating ammunition count.
+    * @returns {void}
+    * @emits WeaponAnimationEvent
+    * @emits WeaponFireEvent
+    */
     fire() 
     {
        // Si l'arme n'est pas entrain de récupérer
@@ -93,7 +110,12 @@ export default class AutomaticWeapon extends BaseWeapon
         // console.log(`${this.bulletLeft + '/' + this.magazineSize}`);
     }
 
-	recover()
+	/**
+     * @method recover
+     * @description Handles the weapon recovery mechanics, including camera rotation and line recovery.
+     * @returns {void}
+     */
+    recover()
 	{
         if (this.cameraRotationBasicTotal > 0) {
             if (this.cameraRotationBasicTotal - 0.001 > 0) {
@@ -105,7 +127,7 @@ export default class AutomaticWeapon extends BaseWeapon
             }
         } 
 
-        const triggleDown = this.weaponSystem.triggerDown;
+        const triggleDown = this.weaponManager.triggerDown;
         let deltaRecoverScale = this.engine.time.delta / this.recoverTime; 
         // Si la gachette n'est pas enfoncée ou qu'il n'y a plus de balles ou que l'arme n'est pas active
         if (!triggleDown || this.bulletLeft <= 0 || !this.active) {
@@ -161,7 +183,7 @@ export default class AutomaticWeapon extends BaseWeapon
     {
         return this.bulletLeft > 0 &&
                this.active &&
-               this.weaponSystem.triggerDown &&
+               this.weaponManager.triggerDown &&
                performance.now() - this.lastFireTime >= this.fireRate * 1000;
     }
 }

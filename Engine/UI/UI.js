@@ -2,10 +2,6 @@ import Engine from '@/Engine';
 
 import Stats from 'three/examples/jsm/libs/stats.module';
 
-import { EngineEventPipe, PointLockEvent } from '@Pipes/EngineEventPipe';
-import { PointLockEventEnum } from '@Enums/EventsEnum';
-
-import Blocker from "./Components/Blocker";
 import HUD from './Components/HUD';
 import InGameMenu from './Components/InGameMenu';
 import Lobby from './Components/Lobby';

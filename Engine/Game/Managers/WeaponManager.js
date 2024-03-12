@@ -1,20 +1,24 @@
 import * as THREE from "three";
 import Engine from "@/Engine";
 import { UserInputEvent, UserInputEventPipe } from "@Pipes/UserInputEventPipe";
-import { UserInputEventEnum } from "@Enums/EventsEnum";
 import { GameEventPipe, WeaponFireEvent, ShotOutWeaponFireEvent, BulletImpactEvent } from "@Pipes/GameEventPipe";
 import { WeaponEnum } from "@Enums/WeaponEnum";
 import { MaterialsEnum } from "@Enums/MaterialsEnum";
+import { UserInputEventEnum } from "@Enums/EventsEnum";
 
-export default class WeaponSystem 
+/**
+ * @class WeaponManager
+ * @description A class to manage the weapon
+ */
+export default class WeaponManager
 {
     static instance;
     constructor() 
     {
-        if (WeaponSystem.instance) {
-            return WeaponSystem.instance;
+        if (WeaponManager.instance) {
+            return WeaponManager.instance;
         }
-        WeaponSystem.instance = this;
+        WeaponManager.instance = this;
         
         this.engine = new Engine();
         this.scene = this.engine.scenes.level;
@@ -27,12 +31,25 @@ export default class WeaponSystem
         this.initializeEventListeners();
     }
 
+
+    /**
+     * @method initializeEventListeners
+     * @description Initialize the event listeners
+     * @listens UserInputEvent
+     * @listens WeaponFireEvent
+     */
     initializeEventListeners() 
     {
         UserInputEventPipe.addEventListener(UserInputEvent.type, this.handleUserInput);
         GameEventPipe.addEventListener(WeaponFireEvent.type, this.handleWeaponFiring);
     }
 
+    /**
+     * @method handleUserInput
+     * @description Handle the user input
+     * @param {UserInputEvent} e - The user input event
+     * @returns {void}
+     */
     handleUserInput = (e) => 
     {
         switch (e.detail.enum) 
@@ -46,6 +63,13 @@ export default class WeaponSystem
         }
     }
 
+    /**
+     * @method handleWeaponFiring
+     * @description Handle the weapon firing
+     * @param {WeaponFireEvent} e - The weapon fire event with the weapon data
+     * @emits ShotOutWeaponFireEvent
+     * @returns {void}
+     */
     handleWeaponFiring = (e) => 
     {
         if (e.detail.weapon && e.detail.weapon.classification !== WeaponEnum.MELEE) {
@@ -55,6 +79,12 @@ export default class WeaponSystem
         this.processRaycasting(e);
     }
 
+    /**
+     * @method processRaycasting
+     * @description Process the raycasting
+     * @param {WeaponFireEvent} e - The weapon fire event with the weapon data
+     * @returns {void}
+     */
     processRaycasting = (e) => 
     {
 		this.intersectedObjects.length = 0;
@@ -73,6 +103,14 @@ export default class WeaponSystem
         }
     }
 
+    /**
+     * @method handleBulletImpact
+     * @description Handle the bullet impact
+     * @param {WeaponFireEvent} e - The weapon fire event with the weapon data
+     * @param {boolean} generatedBullet - The generated bullet
+     * @param {Object} firstIntersection - The first intersection object
+     * @returns {void}
+     */
     handleBulletImpact = (e, generatedBullet, firstIntersection) =>
     {
         if (generatedBullet) return;
@@ -94,6 +132,13 @@ export default class WeaponSystem
         
     }
 
+    /**
+     * @method handlePlayerHit
+     * @description Handle the player hit
+     * @param {Object} intersectedObject - The intersected object
+     * @param {WeaponFireEvent} e - The weapon fire event with the weapon data
+     * @returns {void}
+     */
     handlePlayerHit = (intersectedObject, e) => 
     {
         const playerInstance = intersectedObject.object.parent.parent.parent.userData.instance;
@@ -111,7 +156,13 @@ export default class WeaponSystem
         }
     }
 
-
+    /**
+     * @method handleEnvironmentHit
+     * @description Handle the environment hit
+     * @param {Object} intersectedObject - The intersected object
+     * @param {WeaponFireEvent} e - The weapon fire event with the weapon data
+     * @emits BulletImpactEvent
+     */
     handleEnvironmentHit = (intersectedObject, e) => 
     {
 

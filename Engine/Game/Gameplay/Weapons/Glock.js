@@ -4,9 +4,9 @@ import SemiAutomaticWeapon from "./Components/SemiAutomaticWeapon";
 
 export default class Glock extends SemiAutomaticWeapon
 {
-	constructor({ camera, id})
+	constructor({ camera })
 	{
-		super(camera, id);
+		super(camera);
 
 		this.chamberPosition = new THREE.Vector3(-0.3, .8, 1.3);
 

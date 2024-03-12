@@ -2,7 +2,6 @@
 import * as THREE from "three";
 import Engine from "@/Engine";
 
-import WeaponSystem from "../WeaponSystem";
 
 import { 
 	UserInputEventPipe, 
@@ -25,27 +24,30 @@ import { WeaponEnum } from "@Enums/WeaponEnum";
 
 import { guns } from "@Config/Guns";
 import { traverseGraph } from "@Utils/Three";
-import { SniperWeanponAimEvent } from "../../../../Pipes/GameEventPipe";
 
 const { RELOAD } = WeaponAnimationEventEnum;
 
 const { 
 	BUTTON_RELOAD, 
 	BUTTON_TRIGGLE_DOWN,
-	BUTTON_ADS_DOWN,
-	BUTTON_ADS_UP
 } = UserInputEventEnum;
 
 import vertexShader from "@Assets/shaders/scope/vertex.glsl";
 import fragmentShader from "@Assets/shaders/scope/fragment.glsl";
+import WeaponManager from "@Game/Managers/WeaponManager";
+
+/**
+ * @class BaseWeapon
+ * @description A class to manage the base weapon
+ */
 export default class BaseWeapon
 {
-	constructor(id)
+	constructor()
 	{
 		this.engine = new Engine();
 		this.scene = this.engine.scenes.level;
 
-		this.weaponSystem = new WeaponSystem();
+		this.weaponManager = new WeaponManager();
 
 		this.lastFireTime = 0;
 		this.bulletLeft = null;
@@ -70,9 +72,14 @@ export default class BaseWeapon
 		this.animationsActions = new Map();
 	}
 
+	/**
+	 * @method init
+	 * @description Initialize the weapon after the weapon child is configured
+	 * @returns {void}
+	 */
 	init()
 	{
-		this.registerEventListeners();
+		this.registerEvents();
 		this.initWeapons();
 
 		if(this.classification === WeaponEnum.SNIPER) {
@@ -80,6 +87,11 @@ export default class BaseWeapon
 		}
 	}
 
+	/**
+	 * @method initSniperScope
+	 * @description Initialize the sniper scope for the sniper weapon
+	 * @returns {void}
+	 */
 	initSniperScope()
 	{
 		this.scope = new THREE.Mesh(
@@ -92,17 +104,26 @@ export default class BaseWeapon
 			})
 		);
 		this.scope.position.z = -0.2;
-		// this.scope.rotation.y = Math.PI;
 		this.scope.position.y = 0.2;
 		this.scope.visible = false;
 		this.engine.scenes.player.add(this.scope);
 	}
 
-	registerEventListeners()
+	/**
+	 * @method registerEvents
+	 * @description Register the events
+	 * @listens UserInputEvent 
+	 */
+	registerEvents()
 	{
 		UserInputEventPipe.addEventListener(UserInputEvent.type, (e) => this.handleUserInput(e));
 	}
 
+	/**
+	 * @method handleUserInput
+	 * @description Handle the user input
+	 * @param {UserInputEvent} e - The user input event
+	 */
 	handleUserInput(e) 
     {   
         if(!this.active) return;
@@ -116,7 +137,11 @@ export default class BaseWeapon
 		}
     }
 
-
+	/**
+	 * @method initWeapons
+	 * @description Initialize the weapons
+	 * @returns {void}
+	 */
 	initWeapons()
 	{	
 		traverseGraph(this.engine.scenes.player, child => {
@@ -131,6 +156,11 @@ export default class BaseWeapon
 		this.armature = this.engine.resources.get(`${this.name}_Armature`);
 	}
 
+	/**
+	 * @method reloadWeapon
+	 * @description Reload the weapon
+	 * @returns {void}
+	 */
 	reloadWeapon() 
 	{
 		// Si le chargeur est plein ou qu'il n'y a plus de balles, on ne recharge pas
@@ -146,6 +176,11 @@ export default class BaseWeapon
 
     }
 
+	/**
+	 * @method triggerWeapon
+	 * @description Trigger the weapon
+	 * @returns {void}
+	 */
 	triggerWeapon() 
 	{
         if (!this.engine.pointLock.isLocked || this.bulletLeft <= 0 || !this.active) return;
@@ -156,6 +191,11 @@ export default class BaseWeapon
         }
     }
 
+	/**
+	 * @method update
+	 * @description Update the animation manager
+	 * @returns {void}
+	 */
 	update()
 	{
 		this.animationManager.update();
