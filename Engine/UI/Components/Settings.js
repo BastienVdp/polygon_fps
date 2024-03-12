@@ -1,6 +1,9 @@
 import Component from '@Core/Component.js';
-import { throttle } from '@Utils/Utils';
 
+/**
+ * @class Settings
+ * @description Class to manage the settings UI
+ */
 export default class Settings extends Component
 {
 	constructor()
@@ -21,6 +24,7 @@ export default class Settings extends Component
 			}
 		});
 
+		// Get all the elements without the button
 		this.elementsWithoutButton = Object.keys(this.elements).filter(key => key !== 'button');
 		
 		this.initialize();
@@ -31,6 +35,11 @@ export default class Settings extends Component
 		this.registerEvents();
 	}
 
+	/**
+	 * @method registerEvents
+	 * @description Register the events
+	 * @returns {void}
+	 */
 	registerEvents()
 	{
 		this.elementsWithoutButton.forEach(key => {
@@ -40,11 +49,21 @@ export default class Settings extends Component
 		this.elements.button.addEventListener('click', this.saveSettings.bind(this));
 	}
 
+	/**
+	 * @method saveSettings
+	 * @description Save the settings in the local storage when the user click on the save button
+	 * @returns {void}
+	 */
 	saveSettings()
 	{
 		this.elementsWithoutButton.forEach(key => localStorage.setItem(`${key}_key`, this.elements[key].value));
 	}
 
+	/**
+	 * @method onInputChange
+	 * @description Throttle the input change event and check if the value is valid or handle the error
+	 * @param {Event} e - The event
+	 */
 	onInputChange = (e, key) =>
 	{
 		this.throttle(() => {
@@ -55,9 +74,15 @@ export default class Settings extends Component
 				console.error(`${key} value is not valid`)
 				this.handleInputError(key, e.target.value);
 			}
-		}, 1000);
+		}, 2000);
 	}
 
+	/**
+	 * @method inputIsValidNumber
+	 * @description Check if the input value is a valid number
+	 * @param {string} value - The value to check
+	 * @returns {boolean} - The result
+	 */
 	inputIsValidNumber(value)
 	{
 		if(Number(value) < 0 || Number(value) > 1 || value === '' || value === null || value === undefined || isNaN(value))
@@ -68,6 +93,12 @@ export default class Settings extends Component
 		return true;
 	}
 
+	/**
+	 * @method inputIsValidString
+	 * @description Check if the input value is a valid string
+	 * @param {string} value - The value to check
+	 * @returns {boolean} - The result
+	 */
 	inputIsValidString(value)
 	{
 		if(value === '' || value === null || value === undefined || value.length > 1 || !isNaN(value))
@@ -78,6 +109,13 @@ export default class Settings extends Component
 		return true;
 	}
 
+	/**
+	 * @method checkInputValue
+	 * @description Check if the input value is valid
+	 * @param {string} name - The name of the input
+	 * @param {string} value - The value of the input
+	 * @returns {boolean} - The result
+	 */
 	checkInputValue(name, value)
 	{
 		switch(name)
@@ -98,6 +136,13 @@ export default class Settings extends Component
 		}
 	}
 
+	/**
+	 * @method handleInputError
+	 * @description Handle the input error
+	 * @param {string} name - The name of the input
+	 * @param {string} value - The value of the input
+	 * @returns {void}
+	 */
 	handleInputError(name, value)
 	{
 		switch(name)

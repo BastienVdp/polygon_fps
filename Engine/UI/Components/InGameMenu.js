@@ -3,6 +3,10 @@ import InGameMenuContent from './InGameMenuContent';
 import Engine from '@/Engine';
 import { PointLockEventEnum } from '@Enums/EventsEnum';
 import { PointLockEvent, EngineEventPipe } from '@Pipes/EngineEventPipe';
+/**
+ * @class InGameMenu
+ * @description Class to manage the in game menu UI
+ */
 export default class InGameMenu extends Component 
 {
 	constructor() 
@@ -26,12 +30,21 @@ export default class InGameMenu extends Component
 		this.createContent();
 	}
 	
+	/**
+	 * @method createContent
+	 * @description Create the content panel for the in game menu
+	 */
 	createContent()
 	{
 		this.content = new InGameMenuContent();
 		this.setActiveTab(this.activeTab);
 	}
 
+	/**
+	 * @method registerEvents
+	 * @description Register the events
+	 * @listens PointLockEvent
+	 */
 	registerEvents()
 	{
 		this.elements.menuItems.forEach(item => {
@@ -41,6 +54,10 @@ export default class InGameMenu extends Component
 		EngineEventPipe.addEventListener(PointLockEvent.type, (e) => this.handlePointerLockChange(e));
 	}
 
+	/**
+	 * @method handlePointerLockChange
+	 * @description Handle the pointer lock change event
+	 */
 	handlePointerLockChange(e)
 	{
 		switch (e.detail.enum) {
@@ -53,6 +70,13 @@ export default class InGameMenu extends Component
 		}
 	}
 	
+	/**
+	 * @method onMenuItemClick
+	 * @description Handle the menu item click event
+	 * @param {Event} event
+	 * @listens click
+	 * @returns {void}
+	 */
 	onMenuItemClick(event)
 	{
 		if(event.target.dataset.action === 'resume') 
@@ -63,6 +87,11 @@ export default class InGameMenu extends Component
 		this.setActiveTab(event.target.dataset.action);
 	}
 
+	/**
+	 * @method setActiveTab
+	 * @description Set the active tab
+	 * @param {String} tab
+	 */
 	setActiveTab(tab) 
 	{
 		this.activeTab = tab;

@@ -5,8 +5,16 @@ import { GameEvent, EngineEventPipe } from '@Pipes/EngineEventPipe';
 import LobbyScene from "@Game/Lobby/LobbyScene";
 import { GameEnums } from "@Config/Enums/GameEnum";
 
+/**
+ * @class Lobby
+ * @description Class to manage the lobby UI
+ */
 export default class Lobby extends Component
 {
+	/**
+	 * @constructor
+	 * @description Create a lobby
+	 */
 	constructor() 
 	{
 		super({
@@ -29,19 +37,20 @@ export default class Lobby extends Component
 	}
 
 
+	/**
+	 * @method registerEvents
+	 * @description Register the events
+	 * @returns {void}
+	 */
 	registerEvents()
 	{
 		this.elements.launchButton.addEventListener('click', () => {
-			// this.engine.renderer.renderLobby(false);
+			// Launch the game
 			GameEvent.detail.enum = GameEnums.LAUNCH;
 			EngineEventPipe.dispatchEvent(GameEvent);
-
+			// Hide the lobby
 			this.hide();
 		});
-
-		// this.elements.inviteButton.addEventListener('click', () => {
-		// 	this.elements.input.select();
-		// });
 	}
 
 	

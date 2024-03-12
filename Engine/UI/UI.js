@@ -18,6 +18,7 @@ import Lobby from './Components/Lobby';
 export default class UI 
 {
 	static instance;
+
 	constructor()
 	{
 		if (UI.instance) 
@@ -37,34 +38,48 @@ export default class UI
 		this.show();
 
 		this.createLobby();
-		// this.createStats();
+		this.createStats();
 
 		this.createInGameMenu();
-		// this.createBlocker();
 		this.createHUD();
 	}
 
+	/**
+	 * @method createLobby
+	 * @description Create the lobby
+	 * @returns {void}
+	 */
 	createLobby()
 	{
 		this.lobby = new Lobby();
 	}
 
+	/**
+	 * @method createStats
+	 * @description Create the stats
+	 * @returns {void}
+	 */
 	createStats()
 	{
 		this.stats = new Stats();
 		document.body.appendChild(this.stats.dom);
 	}
 
-	createBlocker()
-	{
-		this.blocker = new Blocker();
-	}
-
+	/**
+	 * @method createInGameMenu
+	 * @description Create the in game menu
+	 * @returns {void}
+	 */
 	createInGameMenu()
 	{
 		this.inGameMenu = new InGameMenu();
 	}
 	
+	/**
+	 * @method createHUD
+	 * @description Create the HUD
+	 * @returns {void}
+	 */
 	createHUD()
 	{
 		this.hud = new HUD();

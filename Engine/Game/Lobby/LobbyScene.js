@@ -2,6 +2,10 @@ import { EquirectangularReflectionMapping, LinearFilter, AmbientLight, Direction
 import Engine from "@/Engine";
 import { SkeletonUtils } from "three-stdlib";
 
+/**
+ * @class LobbyScene
+ * @description Class to manage the lobby scene
+ */
 export default class LobbyScene 
 {
 	constructor()
