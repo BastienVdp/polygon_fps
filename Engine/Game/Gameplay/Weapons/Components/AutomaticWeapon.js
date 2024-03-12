@@ -13,7 +13,7 @@ export default class AutomaticWeapon extends BaseWeapon
 {
 	constructor(bulletPosition, bulletPositionDelta, camera) 
     {
-        super(id);
+        super();
 
         this.engine = new Engine();
 
