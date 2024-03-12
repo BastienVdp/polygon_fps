@@ -10,15 +10,20 @@ import LocalPlayer from "./Components/LocalPlayer";
  */
 export default class Player
 {
-
+	static _instance;
 	/**
 	 * Constructor
 	 * @constructor
 	 * @description Create a new player
 	 * @param {Object} state - The network state of the player
 	 */
-	constructor(state = { id: 1, name: 'localPlayer' })
+	constructor(state)
 	{
+		if (Player._instance) {
+			return Player._instance;
+		}
+		Player._instance = this;
+		
 		this.id = state.id;
 		this.state = state;
 

@@ -4,9 +4,12 @@ import SemiAutomaticWeapon from "./Components/SemiAutomaticWeapon";
 
 export default class AWP extends SemiAutomaticWeapon
 {
+	static instance;
 	constructor({ camera, id})
 	{
 		super(camera, id);
+		if(AWP.instance) return AWP.instance;
+		AWP.instance = this;
 
 		this.chamberPosition = new THREE.Vector3(-0.3, .8, 1.3);
 

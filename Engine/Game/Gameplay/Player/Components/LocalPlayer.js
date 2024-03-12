@@ -101,32 +101,60 @@ export default class LocalPlayer
 	{
 		this.inventoryManager = new InventoryManager();
 
+		this.createGlock();
+		this.createM416();		
+	}
+
+	createM416()
+	{
+		this.m416 = new M416({
+			camera: this.camera.camera,
+			id: this.id
+		});
+		this.inventoryManager.pickUp(this.m416);
+		this.inventoryManager.switchWeapon(InventoryEnum.PRIMARY);
+	}
+
+	createAWP()
+	{
+		this.awp = new AWP({
+			camera: this.camera.camera,
+			id: this.id
+		});
+		this.inventoryManager.pickUp(this.awp);
+		this.inventoryManager.switchWeapon(InventoryEnum.PRIMARY);
+	}
+
+	destroyM416()
+	{
+		this.inventoryManager.removeFromInventory('M416');
+		this.m416.setActive(false);
+		this.m416.setVisible(false);
+	}
+
+	destroyAWP()
+	{
+		this.inventoryManager.removeFromInventory('AWP');
+		this.awp.setActive(false);
+		this.awp.setVisible(false);
+	}
+
+	createGlock()
+	{
 		this.glock = new Glock({ 
 			camera: this.camera.camera, 
 			id: this.id 
 		});
 		this.inventoryManager.pickUp(this.glock);
 		this.inventoryManager.switchWeapon(InventoryEnum.SECONDARY);
-		
-		this.m416 = new M416({
-			camera: this.camera.camera,
-			id: this.id
-		});
-		this.inventoryManager.pickUp(this.m416);
-
-		this.awp = new AWP({
-			camera: this.camera.camera,
-			id: this.id
-		});
-		// this.inventoryManager.pickUp(this.awp);
-		this.inventoryManager.switchWeapon(InventoryEnum.PRIMARY);
-		
+	
 	}
 
 	registerEvents()
 	{
 	}
 
+	
 
 	/**
      * Update method
@@ -135,8 +163,8 @@ export default class LocalPlayer
      */
 	update()
 	{
+		if(!this.engine.pointLock.isLocked) return;
 		this.controls.update();
 		this.inventoryManager.update();
-		this.engine.resources.get('M416_AnimationMixer').update(this.engine.time.delta);
 	}	
 }

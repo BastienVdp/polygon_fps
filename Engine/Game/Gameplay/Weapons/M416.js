@@ -20,9 +20,13 @@ const bulletPositionDelta = bulletDeltaPositionArray2ScreenCoordArray(ak47Bullet
 
 export default class M416 extends AutomaticWeapon
 {
+	static instance; 
 	constructor({ camera, id })
 	{
 		super(bulletPosition, bulletPositionDelta, camera, id);
+
+		if(M416.instance) return M416.instance;
+		M416.instance = this;
 
 		this.engine = new Engine();
 

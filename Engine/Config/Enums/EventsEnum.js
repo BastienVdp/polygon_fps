@@ -43,3 +43,10 @@ export const WeaponAnimationEventEnum =
     RELOAD: "RELOAD",
     IDLE: "IDLE",
 };
+
+export const GameEventEnum = 
+{
+    RESIZING: "RESIZING",
+    LAUNCH: 'launch',
+	READY: 'ready',
+}

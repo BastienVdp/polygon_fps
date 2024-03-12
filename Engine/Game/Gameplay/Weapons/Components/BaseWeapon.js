@@ -133,7 +133,6 @@ export default class BaseWeapon
 
 	reloadWeapon() 
 	{
-		console.log('reloadWeapon');
 		// Si le chargeur est plein ou qu'il n'y a plus de balles, on ne recharge pas
 		if(this.bulletLeft === this.magazineSize || (this.bulletLeftMax) <= 0) return;
 		this.setActive(false);

@@ -33,3 +33,9 @@ export const LoadingEvent = new CustomEvent('assets loading', {
         resource: undefined,
     }
 });
+
+export const GameEvent = new CustomEvent('game event', {
+    detail: {
+        enum: undefined,
+    }
+});

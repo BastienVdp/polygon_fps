@@ -87,9 +87,9 @@ export default class InventoryManager
      * @description Switches the player's weapon.
      * @param {String} targetInventory - The target inventory slot.
      */
-	switchWeapon(targetInventory) 
+	switchWeapon(targetInventory, fromPanel = false) 
 	{
-        if (this.currentWeapon === targetInventory) return;
+        // if (this.currentWeapon === targetInventory && !fromPanel) return;
 
         this.animateWeaponSwitch(this.currentWeapon, targetInventory);
         
@@ -133,20 +133,6 @@ export default class InventoryManager
     }
 
     /**
-     * Is weapon animation
-     * @method isWeaponAnimation
-     * @description Determines if the animation is a weapon animation.
-     * @param {String} animationName - The animation name.
-     * @param {String} inventorySlot - The inventory slot.
-     * @returns {Boolean} - Whether or not the animation is a weapon animation.
-     */
-	isWeaponAnimation(animationName, inventorySlot) 
-	{
-        const weapon = this.weapons.get(inventorySlot);
-        return weapon && (animationName === weapon.animations.get('Wave'));
-    }
-
-    /**
      * Pick up a weapon
      * @method pickUp
      * @description Adds a weapon to the player's inventory.
@@ -158,6 +144,17 @@ export default class InventoryManager
         if (!this.weapons.get(inventorySlot)) {
             this.weapons.set(inventorySlot, weapon);
         }
+    }
+
+    removeFromInventory(weaponName)
+    {
+        this.weapons.forEach((weapon, key) => {
+            if(weapon.name === weaponName) {
+                this.weapons.set(InventoryEnum.PRIMARY, null);
+            }
+        });
+
+      
     }
 
     /**

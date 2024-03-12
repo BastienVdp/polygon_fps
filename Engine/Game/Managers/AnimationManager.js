@@ -226,11 +226,14 @@ export default class AnimationManager
             this.handleUserInputEvent(e.detail.enum);
         });
 
-        this.engine.resources.get(`${this.weapon.name}_AnimationMixer`).addEventListener('finished', e => {
-            if (e.type === 'finished') {
-                this.handleAnimationFinished(e);
-            }
-        });
+   
+        if(this.engine.resources.get(`${this.weapon.name}_AnimationMixer`)) {
+            this.engine.resources.get(`${this.weapon.name}_AnimationMixer`).addEventListener('finished', e => {
+                if (e.type === 'finished') {
+                    this.handleAnimationFinished(e);
+                }
+            });
+        }
     }
 
     /**
@@ -381,7 +384,6 @@ export default class AnimationManager
                 this.handleJumpAnimationFinished();
                 break;
             case this.getAnimationClipName(this.animations[`${this.weapon.name}_fire`]):
-                console.log('fire finished go to idle');
                 this.handleIdleAnimation();
                 break;
             case this.getAnimationClipName(this.animations[`${this.weapon.name}_ads_fire`]):
@@ -457,7 +459,7 @@ export default class AnimationManager
     handleRemoveAnimation() 
     {
         this.stopAllAnimations();
-        this.fadeOutAllAnimations(0.5);
+        // this.fadeOutAllAnimations(0.5);
         this.weapon.setActive(false);
         this.weapon.setVisible(false);
     }
@@ -519,7 +521,6 @@ export default class AnimationManager
 
         this.states.reloading = true;
         this.stopAndPlayAnimation(`${this.weapon.name}_reload`);
-        console.log(`${this.weapon.name}_reload`)
     }
 
 
