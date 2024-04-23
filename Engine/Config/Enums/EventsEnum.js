@@ -42,6 +42,9 @@ export const WeaponAnimationEventEnum =
     FIRE: "FIRE",
     RELOAD: "RELOAD",
     IDLE: "IDLE",
+    WALK: "WALK",
+    RUN: "RUN",
+    JUMP: "JUMP",
 };
 
 export const GameEventEnum = 

@@ -70,6 +70,7 @@ export default class DesertMap extends Map
 				child.material.needsUpdate = true;
 				child.material.metalness = 0.0;
 				child.material.roughness = 1.0;
+				// child.material.wireframe = true;
 			}
 		});
 	}
@@ -92,8 +93,8 @@ export default class DesertMap extends Map
 	setCollider()
 	{
 		this.collider = this.scene.getObjectByName("collider");
-		this.collider.visible = this.settings.collider;
-
+		// this.collider.visible = this.settings.collider;
+		this.scene.remove(this.collider);
 		this.engine.octree.fromGraphNode(this.collider);
 	}
 

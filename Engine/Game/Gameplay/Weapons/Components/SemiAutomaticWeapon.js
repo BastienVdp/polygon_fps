@@ -59,7 +59,7 @@ export default class SemiAutomaticWeapon extends BaseWeapon
 
         const deltaRecoiledX = bpX * k;
         const deltaRecoiledY = bpY * k;
-        this.bPointRecoiledScreenCoord.set(deltaRecoiledX, deltaRecoiledY);
+        this.impact.set(deltaRecoiledX, deltaRecoiledY);
 
         // Dispatch fire event
         this.dispatchAnimationWeapon(WeaponAnimationEventEnum.FIRE);

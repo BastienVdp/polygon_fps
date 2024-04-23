@@ -89,6 +89,7 @@ export default class Engine
 			player: new Scene(),
 			skybox: new Scene(),
 			lobby: new Scene(),
+			sprites: new Scene(),
 		};
 
 		this.scenes.lobby.background = new Color(0x000000);

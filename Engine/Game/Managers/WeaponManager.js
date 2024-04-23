@@ -89,7 +89,7 @@ export default class WeaponManager
     {
 		this.intersectedObjects.length = 0;
 		let generatedBullet = false;
-		const bpPointScreenCoord = e.detail.params.bPointRecoiledScreenCoord;
+		const bpPointScreenCoord = e.detail.params.impact;
         this.raycaster.setFromCamera(bpPointScreenCoord, this.camera); 
         this.raycaster.params.Mesh.threshold = 1;
 
@@ -166,21 +166,22 @@ export default class WeaponManager
     handleEnvironmentHit = (intersectedObject, e) => 
     {
 
+        console.log('handleEnvironmentHit', intersectedObject.face.normal);
         if (e.detail.weapon && e.detail.weapon.classification === WeaponEnum.MELEE) 
         {
             return; // Pas de point d'impact pour les armes de mêlée
         }
 
-
         // Logique pour gérer l'impact des balles sur les objets de l'environnement
         const point = intersectedObject.point;
         const normal = intersectedObject.face.normal;
 
+
         // Préparation de l'événement pour l'impact de la balle
-        BulletImpactEvent.detail.fallenPoint.copy(point);
-        BulletImpactEvent.detail.fallenNormal.copy(normal);
+        BulletImpactEvent.detail.point.copy(point);
+        BulletImpactEvent.detail.normal.copy(normal);
         BulletImpactEvent.detail.cameraPosition.copy(this.camera.position);
-        BulletImpactEvent.detail.recoiledScreenCoord.copy(e.detail.params.bPointRecoiledScreenCoord);
+        BulletImpactEvent.detail.recoiledScreenCoord.copy(e.detail.params.impact);
 
         // Envoi de l'événement pour l'affichage de l'impact de la balle
         // console.log('dispatching bullet fallen point event');

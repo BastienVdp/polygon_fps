@@ -69,15 +69,15 @@ export default class AutomaticWeapon extends BaseWeapon
 
         // Calcul de la position du tir en fonction de la ligne de récupération
         const floatTypedArray0 = this.bulletPositionInterpolant.evaluate(this.recoverLine); 
-        this.bPointRecoiledScreenCoord.set(floatTypedArray0[0], floatTypedArray0[1]); 
+        this.impact.set(floatTypedArray0[0], floatTypedArray0[1]); 
 
         // Correction de la position du tir en fonction de la précision de l'arme * facteur aléatoire
         const deltaRecoiledX = (1 / this.accurateRange) * (Math.random() - 0.5); 
         const deltaRecoiledY = (1 / this.accurateRange) * Math.random(); // 
         
         // Applique la correction de la position du tir
-        this.bPointRecoiledScreenCoord.x += deltaRecoiledX;
-        this.bPointRecoiledScreenCoord.y += deltaRecoiledY;
+        this.impact.x += deltaRecoiledX;
+        this.impact.y += deltaRecoiledY;
 
         // Ajustement de la rotation de la caméra
         const basicPitch = 0.04 * Math.PI * (1 / this.recoilControl);

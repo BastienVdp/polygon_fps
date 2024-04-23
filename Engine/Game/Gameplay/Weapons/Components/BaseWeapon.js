@@ -35,6 +35,7 @@ const {
 import vertexShader from "@Assets/shaders/scope/vertex.glsl";
 import fragmentShader from "@Assets/shaders/scope/fragment.glsl";
 import WeaponManager from "@Game/Managers/WeaponManager";
+import Hole from "../../../Sprites/Bullet/Hole";
 
 /**
  * @class BaseWeapon
@@ -65,7 +66,7 @@ export default class BaseWeapon
 		this.cameraRotationBasicTotal = 0; 
 		this.recovercameraRotateTotalX = 0; 
 		this.recovercameraRotateTotalY = 0;
-		this.bPointRecoiledScreenCoord = new THREE.Vector2(); 
+		this.impact = new THREE.Vector2(); 
 
 	
 		this.guns = new Map();
@@ -81,6 +82,8 @@ export default class BaseWeapon
 	{
 		this.registerEvents();
 		this.initWeapons();
+
+		this.hole = new Hole();
 
 		if(this.classification === WeaponEnum.SNIPER) {
 			this.initSniperScope();
@@ -214,7 +217,7 @@ export default class BaseWeapon
 
 	dispatchWeaponFireEvent() 
 	{
-		WeaponFireEvent.detail.params = { bPointRecoiledScreenCoord: this.bPointRecoiledScreenCoord, bulletCount: this.bulletLeft };
+		WeaponFireEvent.detail.params = { impact: this.impact, bulletCount: this.bulletLeft };
         WeaponFireEvent.detail.weapon = this;
         GameEventPipe.dispatchEvent(WeaponFireEvent);
     }
