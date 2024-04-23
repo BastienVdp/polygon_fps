@@ -24,7 +24,7 @@ export default class AWP extends SemiAutomaticWeapon
 		this.setBulletLeftMax(12); // The maximum bullet left
 		this.setFireRate(90 / 60); // The fire rate per second
 		this.setRecoverTime(0.34); // The recover time for the recoil
-		this.setReloadTime(1); // The reload time
+		this.setReloadTime(2.25); // The reload time
 		this.setRecoilControl(1.5);  // The recoil control
 		this.setAccurateRange(120); // The accurate range
 		this.setBulletLeft(this.magazineSize);

@@ -69,13 +69,13 @@ export default class AnimationManager
         switch (name) {
             case `${this.weapon.name}_draw`:
             case `${this.weapon.name}_remove`:
-                this.setupOnceAnimation(animation);
+                this.setupDrawAnimation(animation);
                 break;
             case `${this.weapon.name}_jump`:
                 this.setupJumpOnceAnimation(animation);
                 break;
             case `${this.weapon.name}_reload`:
-                this.setupLoopOnceAnimation(animation, animation._clip.duration / (this.weapon.reloadTime * 2));
+                this.setupLoopOnceAnimation(animation, animation._clip.duration / this.weapon.reloadTime);
                 break;
             case `${this.weapon.name}_fire`:
             case `${this.weapon.name}_ads_fire`:
@@ -147,6 +147,18 @@ export default class AnimationManager
         }
     }
 
+    setupDrawAnimation(animation)
+    {
+        animation.setLoop(THREE.LoopOnce);
+        animation.clampWhenFinished = true;
+        if(this.isWeaponM416()) {
+            animation.timeScale = 1.4;
+        } else if(this.isSniper()) {
+            animation.timeScale = 1.4;
+        } else {
+            animation.timeScale = 2.0;
+        }
+    }
     /**
      * @method setupOnceAnimation  
      * @description Setup the animation to play once, clamp when finished and set the time scale
@@ -157,7 +169,7 @@ export default class AnimationManager
     {
         animation.setLoop(THREE.LoopOnce);
         animation.clampWhenFinished = true;
-        animation.timeScale = this.isWeaponM416() ? 0.8 : 2.0;
+        animation.timeScale = 1.0;
     }
 
     /** 
@@ -209,8 +221,7 @@ export default class AnimationManager
     registerInputEvents() 
     {
         AnimationEventPipe.addEventListener(FirstPersonAnimationEvent.type, e => {
-            if (e.detail.weapon !== this.weapon) return;
-            this.playAnimation(e.detail.enum);
+            this.handleAnimationEvent(e.detail);
         });
 
         UserInputEventPipe.addEventListener(UserInputEvent.type, e => {
@@ -226,6 +237,12 @@ export default class AnimationManager
         }
     }
 
+    handleAnimationEvent(detail)
+    {
+        if (detail.weapon !== this.weapon) return;
+        this.playAnimation(detail.enum);
+    }
+    
     /** 
      * @method handleUserInputEvent
      * @description Handle the user input event
@@ -234,147 +251,248 @@ export default class AnimationManager
      */
     handleUserInputEvent(inputEvent) 
     {
+        if(!this.weapon.active) return;
         switch (inputEvent) {
             case UserInputEventEnum.MOVE_FORWARD_DOWN:
             case UserInputEventEnum.MOVE_BACKWARD_DOWN:
-                this.handleWalking(true);
+                this.playAnimation(WeaponAnimationEventEnum.WALK);
                 break;
             case UserInputEventEnum.MOVE_FORWARD_UP:
             case UserInputEventEnum.MOVE_BACKWARD_UP:
-                this.handleWalking(false);
+                this.playAnimation(WeaponAnimationEventEnum.WALK, false);
                 break;
             case UserInputEventEnum.BUTTON_SHIFT_DOWN:
-                this.handleRunning(true);
+                this.playAnimation(WeaponAnimationEventEnum.RUN);
                 break;
             case UserInputEventEnum.BUTTON_SHIFT_UP:
-                this.handleRunning(false);
+                this.playAnimation(WeaponAnimationEventEnum.RUN, false);
                 break;
             case UserInputEventEnum.JUMP:
-                this.handleJump();
+                this.playAnimation(WeaponAnimationEventEnum.JUMP);
                 break;
             case UserInputEventEnum.BUTTON_ADS_DOWN:
-                this.handleADS(true);
+                this.playAnimation(WeaponAnimationEventEnum.ADS);
                 break;
             case UserInputEventEnum.BUTTON_ADS_UP:
-                this.handleADS(false);
+                this.playAnimation(WeaponAnimationEventEnum.ADS, false);
                 break;
         }
     }
 
-    /** 
-     * @method handleADS
-     * @description Handle the aim down sight event
-     * @param {boolean} isADS - True if the player is aiming down sight
+    /**
+     * @method playAnimation
+     * @description Play the animation based on the event
+     * @param {WeaponAnimationEventEnum} event - The weapon animation event
      * @returns {void}
      */
-    handleADS(isADS) 
+    playAnimation(event, value = true) 
     {
+        switch (event) {
+            case WeaponAnimationEventEnum.REMOVE:
+                this.handleRemoveAnimation();
+                break;
+            case WeaponAnimationEventEnum.DRAW:
+                this.handleDrawAnimation();
+                break;
+            case WeaponAnimationEventEnum.IDLE:
+                this.handleIdleAnimation();
+                break;
+            case WeaponAnimationEventEnum.FIRE:
+                this.handleFireAnimation();
+                break;
+            case WeaponAnimationEventEnum.RELOAD:
+                this.handleReloadAnimation();
+                break;
+            case WeaponAnimationEventEnum.ADS:
+                if(value) {
+                    this.handleAdsAnimation();
+                } else {
+                    this.handleStopAdsAnimation();
+                }
+                break;
+            case WeaponAnimationEventEnum.WALK:
+                if(value) {
+                    this.handleWalkAnimation();
+                } else {
+                    this.handleStopWalkAnimation();
+                }
+                break;
+            case WeaponAnimationEventEnum.RUN:
+                if(value) {
+                    this.handleRunAnimation();
+                } else {
+                    this.handleStopRunAnimation();
+                }
+                break;
+            case WeaponAnimationEventEnum.JUMP:
+                this.handleJumpAnimation();
+                break;
+        }
+    }
+
+    handleRemoveAnimation()
+    {
+        this.stopAllAnimations();
+        this.weapon.setActive(false);
+        this.weapon.setVisible(false);
+    }
+
+    handleDrawAnimation()
+    {
+        this.weapon.setVisible(true);
+        this.weapon.setActive(false);
+        this.stopAndPlayAnimation(`${this.weapon.name}_draw`);
+    }
+
+    handleIdleAnimation()
+    {
+        this.states.firing = false;
+
+
+        this.resetStates();
+
+    }
+
+    handleFireAnimation()
+    {
+        this.states.firing = true;
+        if(this.isSniper() || !this.states.ads) {
+            this.stopAllAnimations();
+
+            this.stopAndPlayAnimation(`${this.weapon.name}_fire`);
+            if(this.isSniper()) {
+                this.weapon.setVisible(true);
+                this.weapon.scope.visible = false;
+            }
+        } else {
+            this.stopAndPlayAnimation(`${this.weapon.name}_ads_fire`);
+        }
+    }
+
+    handleReloadAnimation()
+    {
+        this.states.reloading = true;
+        this.stopAllAnimations();
+        this.stopAndPlayAnimation(`${this.weapon.name}_reload`);
+    }
+
+    handleAdsAnimation()
+    {
+        this.stopAllAnimations();
         if (!this.states.reloading && this.weapon.active) {
             if (!this.isSniper()) this.stopAllAnimations();
-            this.states.ads = isADS;
+            this.states.ads = true;
 
             if (this.isSniper()) {
-                this.handleSniperADSAnimation(isADS);
+                this.weapon.setVisible(false);
+                this.weapon.scope.visible = true;
             } else {
-                this.handleNormalADSAnimation(isADS);
+                this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, true);
             }
         }
     }
 
-
-    /**
-     * @method handleSniperADSAnimation
-     * @description Handle the sniper aim down sight animation
-     * @param {boolean} isADS - True if the player is aiming down sight
-     * @returns {void}
-     */
-    handleSniperADSAnimation(isADS) 
+    handleStopAdsAnimation()
     {
-        if (isADS) {
-            this.weapon.setVisible(false);
-            this.weapon.scope.visible = true;
-        } else {
+        this.states.ads = false;
+        if(this.isSniper()) {
             this.weapon.setVisible(true);
             this.weapon.scope.visible = false;
-        }
-    }
-
-    /**
-     * @method handleNormalADSAnimation
-     * @description Handle the normal aim down sight animation
-     * @param {boolean} isADS - True if the player is aiming down sight
-     * @returns {void}
-     */
-    handleNormalADSAnimation(isADS) 
-    {
-        if (!isADS) {
             if(this.states.running) this.playOrStopAnimation(`${this.weapon.name}_run`, true);
-            if(this.states.walking) this.playOrStopAnimation(`${this.weapon.name}_walk`, true);
-            this.playOrStopAnimation(`${this.weapon.name}_idle`, true);
+            else if(this.states.walking) this.playOrStopAnimation(`${this.weapon.name}_walk`, true);
+            else this.playOrStopAnimation(`${this.weapon.name}_idle`, true);
         } else {
-            this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, isADS);
+            this.playOrStopAnimation(`${this.weapon.name}_ads_aim`, false);
+            if(this.states.running) this.playOrStopAnimation(`${this.weapon.name}_run`, true);
+            else if(this.states.walking) this.playOrStopAnimation(`${this.weapon.name}_walk`, true);
+            else this.playOrStopAnimation(`${this.weapon.name}_idle`, true);
         }
     }
 
-    /** 
-     * @method handleRunning
-     * @description Handle the running event
-     * @param {boolean} isRunning - True if the player is running
-     * @returns {void}
-     */
-    handleRunning(isRunning) 
+    handleWalkAnimation()
     {
-        this.states.running = isRunning;
-
-        if (!this.states.walking && !this.states.ads) {
-            this.playAnimation(WeaponAnimationEventEnum.IDLE);
-        }
-
-        if (this.states.walking && !this.states.ads && !this.states.reloading) {
-            this.playOrStopAnimation(`${this.weapon.name}_run`, this.states.running);
-        }
+        if(this.states.walking) return;
+        this.states.walking = true;
+        if(this.states.running) {
+            this.stopAndPlayAnimation(`${this.weapon.name}_run`);
+            this.playOrStopAnimation(`${this.weapon.name}_walk`, false);
+        } 
+        
+        this.stopAndPlayAnimation(`${this.weapon.name}_walk`);
     }
 
-    /**
-     * @method handleWalking
-     * @description Handle the walking event
-     * @param {boolean} isWalking - True if the player is walking
-     * @returns {void}
-     */
-    handleWalking(isWalking) 
+    handleStopWalkAnimation()
     {
-        if (this.states.walking !== isWalking) {
-            this.states.walking = isWalking;
-
-            if (!this.states.walking && !this.states.ads) {
-                this.playAnimation(WeaponAnimationEventEnum.IDLE);
-            }
-        }
-
-        this.playOrStopAnimation(`${this.weapon.name}_walk`, this.states.walking && !this.states.running && !this.states.reloading && !this.states.ads);
-
-        if (this.states.running) {
-            this.playOrStopAnimation(`${this.weapon.name}_run`, this.states.running);
-        }
-
-        if (!this.states.walking) {
-            this.playOrStopAnimation(`${this.weapon.name}_run`, false);
-        }
-    }
-
-    /**
-     * @method handleJump
-     * @description Handle the jump event
-     * @returns {void}
-     */
-    handleJump() 
-    {
-        if (this.states.jumping) return;
-        this.states.jumping = true;
+        this.states.walking = false;
         this.playOrStopAnimation(`${this.weapon.name}_walk`, false);
         this.playOrStopAnimation(`${this.weapon.name}_run`, false);
-        if (!this.states.ads) this.stopAndPlayAnimation(`${this.weapon.name}_jump`);
+        this.playOrStopAnimation(`${this.weapon.name}_idle`, true);
     }
+
+    handleRunAnimation()
+    {
+        if(this.states.running) return;
+        this.states.running = true;
+
+        if(this.states.walking) {
+            this.stopAndPlayAnimation(`${this.weapon.name}_run`);
+        }
+    }
+
+    handleStopRunAnimation()
+    {
+        this.states.running = false;
+
+        this.playOrStopAnimation(`${this.weapon.name}_run`, false);
+    }
+
+    handleJumpAnimation()
+    {
+        this.states.jumping = true;
+    }
+
+    resetStates()
+    {
+        this.states = {
+            running: false,
+            walking: false,
+            ads: false,
+            jumping: false,
+            reloading: false,
+            firing: false
+        }
+    }
+
+    // /**
+    //  * @method handleSniperADSAnimation
+    //  * @description Handle the sniper aim down sight animation
+    //  * @param {boolean} isADS - True if the player is aiming down sight
+    //  * @returns {void}
+    //  */
+    // handleSniperADSAnimation(isADS) 
+    // {
+    //     if (isADS) {
+    //         this.weapon.setVisible(false);
+    //         this.weapon.scope.visible = true;
+    //     } else {
+    //         this.weapon.setVisible(true);
+    //         this.weapon.scope.visible = false;
+    //         if(this.states.running) this.playOrStopAnimation(`${this.weapon.name}_run`, true);
+    //         else if(this.states.walking) this.playOrStopAnimation(`${this.weapon.name}_walk`, true);
+    //         else this.playOrStopAnimation(`${this.weapon.name}_idle`, true);
+    //     }
+    // }
+
+    // /**
+    //  * @method handleNormalADSAnimation
+    //  * @description Handle the normal aim down sight animation
+    //  * @param {boolean} isADS - True if the player is aiming down sight
+    //  * @returns {void}
+    //  */
+    // handleNormalADSAnimation(isADS) 
+    // {
+    //     
+    // }
 
     /**
      * @method handleAnimationFinished
@@ -398,20 +516,35 @@ export default class AnimationManager
                 this.handleJumpAnimationFinished();
                 break;
             case this.getAnimationClipName(this.animations[`${this.weapon.name}_fire`]):
-                this.handleIdleAnimation();
+                this.handleFireAnimationFinished();
                 break;
             case this.getAnimationClipName(this.animations[`${this.weapon.name}_ads_fire`]):
-                this.handleAdsAnimation();
+                this.handleAdsFireAnimationFinished();
                 break;
         }
     }
 
-    /**
-     * @method handleAdsAnimation
-     * @description Handle the aim down sight animation
-     * @returns {void}
-     */
-    handleAdsAnimation() 
+    handleFireAnimationFinished()
+    {
+        this.states.firing = false;
+
+       
+        if(this.states.walking) {
+            this.playOrStopAnimation(`${this.weapon.name}_walk`, true);
+            if(this.states.running && this.states.walking) {
+                this.playOrStopAnimation(`${this.weapon.name}_walk`, false);
+                this.playOrStopAnimation(`${this.weapon.name}_run`, true);
+            } 
+        } else {
+            this.playOrStopAnimation(`${this.weapon.name}_run`, false);
+            this.playOrStopAnimation(`${this.weapon.name}_walk`, false);
+
+            // this.playAnimation(WeaponAnimationEventEnum.IDLE);
+            this.playOrStopAnimation(`${this.weapon.name}_idle`, true);
+        }
+    }
+
+    handleAdsFireAnimationFinished() 
     {
         this.stopAllAnimations();
         if (this.isSniper()) {
@@ -421,11 +554,6 @@ export default class AnimationManager
         }
     }
 
-    /**
-     * @method handleReloadAnimationFinished
-     * @description Handle the reload animation finished event
-     * @returns {void}
-     */
     handleReloadAnimationFinished() 
     {
         this.weapon.setBulletLeft(this.weapon.magazineSize);
@@ -436,112 +564,10 @@ export default class AnimationManager
         this.playAnimation(WeaponAnimationEventEnum.IDLE);
     }
 
-    /**
-     * @method handleDrawAnimationFinished
-     * @description Handle the draw animation finished event
-     * @returns {void}
-     */
     handleDrawAnimationFinished() 
     {
         this.weapon.setActive(true);
         this.playAnimation(WeaponAnimationEventEnum.IDLE);
-    }
-
-    /**
-     * @method playAnimation
-     * @description Play the animation based on the event
-     * @param {WeaponAnimationEventEnum} event - The weapon animation event
-     * @returns {void}
-     */
-    playAnimation(event) 
-    {
-        switch (event) {
-            case WeaponAnimationEventEnum.REMOVE:
-                this.handleRemoveAnimation();
-                break;
-            case WeaponAnimationEventEnum.DRAW:
-                this.handleDrawAnimation();
-                break;
-            case WeaponAnimationEventEnum.IDLE:
-                this.handleIdleAnimation();
-                break;
-            case WeaponAnimationEventEnum.FIRE:
-                this.handleFireAnimation();
-                break;
-            case WeaponAnimationEventEnum.RELOAD:
-                this.handleReloadAnimation();
-                break;
-        }
-    }
-
-    /**
-     * @method handleRemoveAnimation
-     * @description Handle the remove animation
-     * @returns {void}
-     */
-    handleRemoveAnimation() 
-    {
-        this.stopAllAnimations();
-        this.weapon.setActive(false);
-        this.weapon.setVisible(false);
-    }
-
-    /**
-     * @method handleDrawAnimation
-     * @description Handle the draw animation
-     * @returns {void}
-     */
-    handleDrawAnimation() 
-    {
-        this.weapon.setVisible(true);
-        this.weapon.setActive(false);
-        this.stopAndPlayAnimation(`${this.weapon.name}_draw`);
-    }
-
-
-    /**
-     * @method handleIdleAnimation
-     * @description Handle the idle animation
-     * @returns {void}
-     */
-    handleIdleAnimation() 
-    {
-        this.states.firing = false;
-        this.stopAndPlayAnimation(`${this.weapon.name}_idle`);
-    }
-
-    /**
-     * @method handleFireAnimation
-     * @description Handle the fire animation
-     * @returns {void}
-     */
-    handleFireAnimation() 
-    {
-        this.fadeOutAllAnimations(0.5);
-        this.states.firing = true;
-
-        if (this.isSniper() || !this.states.ads) {
-            this.stopAndPlayAnimation(`${this.weapon.name}_fire`);
-
-            if (this.isSniper()) {
-                this.weapon.setVisible(true);
-                this.weapon.scope.visible = false;
-            }
-        } else {
-            this.stopAndPlayAnimation(`${this.weapon.name}_ads_fire`);
-        }
-    }
-
-    /**
-     * @method handleReloadAnimation
-     * @description Handle the reload animation
-     * @returns {void}
-     */
-    handleReloadAnimation() 
-    {
-        this.stopAllAnimations();
-        this.states.reloading = true;
-        this.stopAndPlayAnimation(`${this.weapon.name}_reload`);
     }
 
     /**
@@ -564,7 +590,7 @@ export default class AnimationManager
     playOrStopAnimation(animationName, shouldPlay) 
     {
         if (shouldPlay) {
-            this.animations[animationName].play();
+            this.animations[animationName].reset().play();
         } else {
             this.animations[animationName].reset().stop();
         }
@@ -595,17 +621,6 @@ export default class AnimationManager
         });
 
         Object.values(this.states).forEach(state => (state = false));
-    }
-
-    /**
-     * @method getAnimationAction  
-     * @description Get the animation action based on the name
-     * @param {string} name - The name of the animation
-     * @returns {AnimationAction} - The animation action
-     */
-    getAnimationAction(name) 
-    {
-        return this.animations[this.getAnimationClipName(name)];
     }
 
     /**
