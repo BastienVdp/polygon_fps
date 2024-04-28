@@ -154,7 +154,6 @@ export default class BaseWeapon
 				}
 			});
 		})
-		
 		this.skinnedMesh = this.guns.get(this.name);
 		this.armature = this.engine.resources.get(`${this.name}_Armature`);
 	}

@@ -53,3 +53,14 @@ export const GameEventEnum =
     LAUNCH: 'launch',
 	READY: 'ready',
 }
+
+export const NetworkEventEnum = 
+{
+    CONNECT: 'connect',
+    DISCONNECT: 'disconnect',
+    JOIN: 'join',
+    LEAVE: 'leave',
+    MESSAGE: 'message',
+    ERROR: 'error',
+    SET_NAME: 'set_name',
+}

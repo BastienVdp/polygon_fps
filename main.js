@@ -1,8 +1,10 @@
-import Engine from "./Engine/Engine"
+import { insertCoin } from "playroomkit";
+import Engine from "./Engine/Engine";
 
 const engine = new Engine();
-engine.start();
+
+insertCoin().then(() => {
+  engine.start();
+});
 
 window.Engine = engine;
-
-
