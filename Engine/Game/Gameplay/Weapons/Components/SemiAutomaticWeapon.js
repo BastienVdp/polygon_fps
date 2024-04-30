@@ -5,11 +5,15 @@ import BaseWeapon from "./BaseWeapon";
 import { WeaponAnimationEventEnum } from "@Enums/EventsEnum";
 import AnimationManager from "@Game/Managers/AnimationManager";
 
+/**
+ * @class SemiAutomaticWeapon
+ * @description A class to manage the semi-automatic weapon
+ */
 export default class SemiAutomaticWeapon extends BaseWeapon
 {
-    constructor(camera, id) 
+    constructor(camera) 
 	{
-        super(id);
+        super();
         this.engine = new Engine();
 
         this.camera = camera; 
@@ -22,6 +26,14 @@ export default class SemiAutomaticWeapon extends BaseWeapon
         this.animationManager = new AnimationManager({ weapon: this });
     }
     
+
+    /**
+     * @method fire
+     * @description Fires the weapon, handles shooting mechanics, including calculating bullet position, adjusting camera rotation, and updating ammunition count.
+     * @returns {void}
+     * @emits WeaponAnimationEvent
+     * @emits WeaponFireEvent
+     */
     fire() 
 	{
         if(!this.startRecover)
@@ -47,7 +59,7 @@ export default class SemiAutomaticWeapon extends BaseWeapon
 
         const deltaRecoiledX = bpX * k;
         const deltaRecoiledY = bpY * k;
-        this.bPointRecoiledScreenCoord.set(deltaRecoiledX, deltaRecoiledY);
+        this.impact.set(deltaRecoiledX, deltaRecoiledY);
 
         // Dispatch fire event
         this.dispatchAnimationWeapon(WeaponAnimationEventEnum.FIRE);
@@ -59,6 +71,11 @@ export default class SemiAutomaticWeapon extends BaseWeapon
         // console.log(`${this.bulletLeft + '/' + this.magazineSize}`);
     }
 
+    /**
+     * @method recover
+     * @description Recovers the weapon, handles the recovery mechanics, including adjusting camera rotation and updating the recovery line.
+     * @returns {void}
+     */
     recover() 
 	{
         if(this.recoverLine !== 0)

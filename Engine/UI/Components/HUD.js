@@ -6,10 +6,10 @@ import { AnimationEventPipe, FirstPersonAnimationEvent } from '@Pipes/AnimationE
 import { GameEventPipe, WeaponFireEvent } from '@Pipes/GameEventPipe';
 import { PointLockEventEnum } from '@Enums/EventsEnum';
 import { WeaponAnimationEventEnum } from '@Enums/EventsEnum';
+
 /**
- * Blocker class
- * @class Blocker
- * @description A class that represents the blocker for the pointer lock
+ * @class HUD
+ * @description A class to manage the HUD UI
  * @extends Component
  */
 export default class HUD extends Component
@@ -37,6 +37,14 @@ export default class HUD extends Component
 		this.registerEvents();
 	}
 
+	/**
+	 * @method registerEvents
+	 * @description Register the events
+	 * @listens PointLockEvent
+	 * @listens FirstPersonAnimationEvent
+	 * @listens WeaponFireEvent
+	 * @returns {void}
+	 */
 	registerEvents()
 	{
 		EngineEventPipe.addEventListener(PointLockEvent.type, (e) => this.handlePointerLockChange(e));
@@ -44,6 +52,12 @@ export default class HUD extends Component
 		GameEventPipe.addEventListener(WeaponFireEvent.type, (e) => this.handleFireWeapon(e));
 	}
 
+	/**
+	 * @method handleSwitchWeapon
+	 * @description Handle the switch weapon event
+	 * @param {FirstPersonAnimationEvent} e - The event with the weapon data
+	 * @returns {void}
+	 */
 	handleSwitchWeapon(e)
 	{
 		if(e.detail.enum === WeaponAnimationEventEnum.DRAW)
@@ -65,11 +79,23 @@ export default class HUD extends Component
 		}
 	}
 
+	/**
+	 * @method handleFireWeapon
+	 * @description Handle the fire weapon event
+	 * @param {WeaponFireEvent} e - The event with the weapon data
+	 * @returns {void}
+	 */
 	handleFireWeapon(e)
 	{
 		this.elements.bulletCount.innerHTML = e.detail.params.bulletCount - 1;
 	}
 
+
+	/**
+	 * @method handlePointerLockChange
+	 * @description Handle the pointer lock change event
+	 * @param {PointLockEvent} e - The event 
+	 */
 	handlePointerLockChange(e)
 	{
 		switch (e.detail.enum) {

@@ -27,8 +27,8 @@ export const WeaponFireEvent = new CustomEvent('weapon fired', {
 
 export const BulletImpactEvent = new CustomEvent('bullet impact', {
     detail: {
-        fallenPoint: new Vector3(),
-        fallenNormal: new Vector3(),
+        point: new Vector3(),
+        normal: new Vector3(),
         cameraPosition: new Vector3(),
         recoiledScreenCoord: new Vector2(),
     }
@@ -36,8 +36,10 @@ export const BulletImpactEvent = new CustomEvent('bullet impact', {
 
 export const ShotOutWeaponFireEvent = new CustomEvent('shoutoutweapon fired', {});
 
-export const SniperWeanponAimEvent = new CustomEvent('sniper weapon aimed', {
+export const NetworkEvent = new CustomEvent('network event', {
     detail: {
-        aim: undefined,
+        enum: undefined,
+        data: undefined,
     }
 });
+

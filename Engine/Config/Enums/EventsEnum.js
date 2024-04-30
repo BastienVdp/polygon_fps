@@ -42,6 +42,9 @@ export const WeaponAnimationEventEnum =
     FIRE: "FIRE",
     RELOAD: "RELOAD",
     IDLE: "IDLE",
+    WALK: "WALK",
+    RUN: "RUN",
+    JUMP: "JUMP",
 };
 
 export const GameEventEnum = 
@@ -49,4 +52,15 @@ export const GameEventEnum =
     RESIZING: "RESIZING",
     LAUNCH: 'launch',
 	READY: 'ready',
+}
+
+export const NetworkEventEnum = 
+{
+    CONNECT: 'connect',
+    DISCONNECT: 'disconnect',
+    JOIN: 'join',
+    LEAVE: 'leave',
+    MESSAGE: 'message',
+    ERROR: 'error',
+    SET_NAME: 'set_name',
 }
