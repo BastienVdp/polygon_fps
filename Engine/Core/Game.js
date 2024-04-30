@@ -2,6 +2,7 @@ import DesertMap from "@Game/Maps/DesertMap";
 import Player from "@Game/Gameplay/Player/Player";
 import FirstPersonLayer from "../Game/Layers/FirstPersonLayer";
 import SkyLayer from "../Game/Layers/SkyLayer";
+import Engine from "../Engine";
 
 /**
  * Game class
@@ -10,6 +11,7 @@ import SkyLayer from "../Game/Layers/SkyLayer";
  */
 export default class Game {
   constructor() {
+    this.engine = new Engine();
     this.started = false;
     this.initialize();
   }
@@ -37,6 +39,9 @@ export default class Game {
 
   start() {
     this.started = true;
+    this.engine.pointLock.pointLockListen();
+
+    this.engine.pointLock.lock();
     this.update();
   }
   /**

@@ -13,7 +13,6 @@ export default class PointLock {
     this.engine = new Engine();
 
     this.ownerDocument = this.engine.canvas.ownerDocument;
-    console.log(this.ownerDocument);
     this.isLocked = false;
   }
 
@@ -28,9 +27,9 @@ export default class PointLock {
       "pointerlockchange",
       this.onPointerlockChange
     );
-    // this.ownerDocument.addEventListener("pointerlockerror", (e) =>
-    //   this.onPointerlockError(e)
-    // );
+    this.ownerDocument.addEventListener("pointerlockerror", (e) =>
+      this.onPointerlockError(e)
+    );
   }
 
   /**
@@ -100,6 +99,7 @@ export default class PointLock {
   }
 
   lock() {
+    console.log(this.engine.canvas, "canvas");
     this.engine.canvas.requestPointerLock();
   }
 }

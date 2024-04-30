@@ -115,9 +115,6 @@ export default class Engine {
   }
 
   createGame() {
-    this.pointLock.pointLockListen();
-    this.pointLock.lock();
-
     this.game = new Game();
     this.game.start();
   }
