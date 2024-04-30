@@ -46,6 +46,8 @@ export default class Engine {
     this.octree = new Octree();
 
     this.canvas = document.querySelector("#game");
+
+    this.pointLock = new PointLock();
   }
 
   /**
@@ -113,7 +115,6 @@ export default class Engine {
   }
 
   createGame() {
-    this.pointLock = new PointLock();
     this.pointLock.pointLockListen();
     this.pointLock.lock();
 

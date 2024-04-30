@@ -19,7 +19,7 @@ export default class UI {
       return UI.instance;
     }
     UI.instance = this;
-
+    console.log("create UI");
     this.engine = new Engine();
 
     this.element = document.querySelector(".ui");

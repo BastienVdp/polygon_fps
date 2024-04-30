@@ -152,7 +152,7 @@ export default class LocalPlayer {
    * @description Updates the first-person controls for the local player.
    */
   update() {
-    if (!this.engine.pointLock.isLocked) return;
+    // if (!this.engine.pointLock.isLocked) return;
     this.controls.update();
     this.inventoryManager.update();
   }

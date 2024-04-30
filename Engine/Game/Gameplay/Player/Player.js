@@ -3,6 +3,7 @@ import * as THREE from "three";
 import Engine from "@/Engine";
 import LocalPlayer from "./Components/LocalPlayer";
 import { myPlayer } from "playroomkit";
+import RemotePlayer from "./Components/RemotePlayer";
 
 /**
  * Player class
@@ -18,8 +19,6 @@ export default class Player {
    * @param {Object} state - The network state of the player
    */
   constructor(state) {
-    console.log(state);
-
     this.id = state.id;
     this.state = state;
 
@@ -48,7 +47,6 @@ export default class Player {
    */
   initialize() {
     if (this.isLocalPlayer) {
-      console.log("I am the local player!", this.id);
       this.localPlayer = new LocalPlayer({
         state: this.state,
         container: this.container,
@@ -57,7 +55,6 @@ export default class Player {
 
       this.engine.network.setLocalPlayer(this.localPlayer);
     } else {
-      console.log("I am the remote player!", this.id);
       this.remotePlayer = new RemotePlayer({
         state: this.state,
         container: this.container,
@@ -73,5 +70,6 @@ export default class Player {
    */
   update() {
     if (this.localPlayer) this.localPlayer.update();
+    if (this.remotePlayer) this.remotePlayer.update();
   }
 }
